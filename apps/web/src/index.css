@@ -1,0 +1,252 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --forest-green: #183F32;
+    --botanical-green: #285642;
+    --muted-sage: #A9B7A0;
+    --warm-ivory: #F8F5ED;
+    --soft-cream: #EFE9DB;
+    --natural-charcoal: #252923;
+    --muted-stone: #77796F;
+    --antique-brass: #B49A63;
+    --white: #FFFFFF;
+
+    /* Typography */
+    --font-heading: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-body: "DM Sans", "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  *,
+  *::before,
+  *::after {
+    border-color: #E5DFD3;
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+  }
+
+  html {
+    max-width: 100%;
+    overflow-x: clip;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    max-width: 100%;
+    overflow-x: clip;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+    background-color: var(--warm-ivory);
+    color: var(--natural-charcoal);
+    margin: 0;
+    padding: 0;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  button, input, select, textarea {
+    font-family: var(--font-body);
+  }
+
+  /* Manrope Headings */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+    color: var(--forest-green);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-weight: 700;
+    letter-spacing: -0.045em;
+  }
+
+  h2 {
+    font-weight: 700;
+    letter-spacing: -0.035em;
+  }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 650;
+    letter-spacing: -0.025em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  /* Prevent automatic iOS zooming on form field tap */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  @media (min-width: 640px) {
+    input,
+    select,
+    textarea {
+      font-size: 14px;
+    }
+  }
+
+  /* Accessible interaction targets */
+  button,
+  a {
+    touch-action: manipulation;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Background utilities */
+.bg-warm-ivory {
+  background-color: #F8F5ED;
+}
+
+.bg-soft-cream {
+  background-color: #EFE9DB;
+}
+
+.bg-forest-green {
+  background-color: #183F32;
+}
+
+.bg-botanical-green {
+  background-color: #285642;
+}
+
+.bg-muted-sage {
+  background-color: #A9B7A0;
+}
+
+.bg-antique-brass {
+  background-color: #B49A63;
+}
+
+/* Text utilities */
+.text-natural-charcoal {
+  color: #252923;
+}
+
+.text-forest-green {
+  color: #183F32;
+}
+
+.text-botanical-green {
+  color: #285642;
+}
+
+.text-muted-stone {
+  color: #77796F;
+}
+
+.text-antique-brass {
+  color: #B49A63;
+}
+
+.text-warm-ivory {
+  color: #F8F5ED;
+}
+
+/* Border utilities */
+.border-forest-green {
+  border-color: #183F32;
+}
+
+.border-botanical-green {
+  border-color: #285642;
+}
+
+.border-muted-sage {
+  border-color: #A9B7A0;
+}
+
+.border-soft-cream {
+  border-color: #EFE9DB;
+}
+
+.border-antique-brass {
+  border-color: #B49A63;
+}
+
+/* Subtle botanical grain texture */
+.botanical-pattern {
+  background-image: radial-gradient(
+    rgba(24, 63, 50, 0.04) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
+}
+
+/* Hide horizontal scrollbar for mobile tab bars */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Scrollbar styling */
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #F8F5ED;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #A9B7A0;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #285642;
+}

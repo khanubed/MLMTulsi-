@@ -1,0 +1,175 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  PAYMENT_REVIEW
+}
+
+enum PaymentStatus {
+  INITIATED
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
+  REFUND_PENDING
+  REFUNDED
+  RECONCILIATION_REQUIRED
+}
+
+model Product {
+  id             String         @id @default(uuid()) @db.Uuid
+  slug           String         @unique
+  name           String
+  description    String?
+  pricePaise     BigInt         @map("price_paise")
+  currency       String         @default("INR") @db.Char(3)
+  sku            String?        @unique
+  status         ProductStatus  @default(DRAFT)
+  stockQuantity  Int?           @map("stock_quantity")
+  trackInventory Boolean        @default(false) @map("track_inventory")
+  images         ProductImage[]
+  orderItems     OrderItem[]
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime       @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status])
+  @@map("products")
+}
+
+model ProductImage {
+  id        String   @id @default(uuid()) @db.Uuid
+  productId String   @map("product_id") @db.Uuid
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  altText   String?  @map("alt_text")
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("product_images")
+}
+
+model Order {
+  id             String               @id @default(uuid()) @db.Uuid
+  orderNumber    String               @unique @map("order_number")
+  customerName   String               @map("customer_name")
+  customerPhone  String               @map("customer_phone")
+  customerEmail  String?              @map("customer_email")
+  shippingAddress Json                @map("shipping_address")
+  currency       String               @default("INR") @db.Char(3)
+  subtotalPaise  BigInt               @map("subtotal_paise")
+  shippingPaise  BigInt               @default(0) @map("shipping_paise")
+  taxPaise       BigInt               @default(0) @map("tax_paise")
+  discountPaise  BigInt               @default(0) @map("discount_paise")
+  totalPaise     BigInt               @map("total_paise")
+  status         OrderStatus          @default(PENDING_PAYMENT)
+  paymentStatus  PaymentStatus        @default(INITIATED) @map("payment_status")
+  idempotencyKey String?              @map("idempotency_key")
+  items          OrderItem[]
+  payments       Payment[]
+  statusHistory  OrderStatusHistory[]
+  createdAt      DateTime             @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime             @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([createdAt])
+  @@index([status, paymentStatus])
+  @@map("orders")
+}
+
+model OrderItem {
+  id                  String   @id @default(uuid()) @db.Uuid
+  orderId             String   @map("order_id") @db.Uuid
+  order               Order    @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  productId           String   @map("product_id") @db.Uuid
+  product             Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  productNameSnapshot String   @map("product_name_snapshot")
+  productSlugSnapshot String   @map("product_slug_snapshot")
+  skuSnapshot         String?  @map("sku_snapshot")
+  unitPricePaise      BigInt   @map("unit_price_paise")
+  quantity            Int
+  lineTotalPaise      BigInt   @map("line_total_paise")
+
+  @@map("order_items")
+}
+
+model Payment {
+  id                         String        @id @default(uuid()) @db.Uuid
+  orderId                    String        @map("order_id") @db.Uuid
+  order                      Order         @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  provider                   String        @default("PHONEPE")
+  merchantOrderReference     String        @unique @map("merchant_order_reference")
+  providerTransactionReference String?     @map("provider_transaction_reference")
+  amountPaise                BigInt        @map("amount_paise")
+  currency                   String        @default("INR") @db.Char(3)
+  status                     PaymentStatus @default(INITIATED)
+  providerStatus             String?       @map("provider_status")
+  checkoutUrl                String?       @map("checkout_url")
+  initiatedAt                DateTime?     @map("initiated_at") @db.Timestamptz
+  verifiedAt                 DateTime?     @map("verified_at") @db.Timestamptz
+  createdAt                  DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt                  DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([orderId, status])
+  @@map("payments")
+}
+
+model PaymentEvent {
+  id                     String    @id @default(uuid()) @db.Uuid
+  provider               String    @default("PHONEPE")
+  providerEventId        String?   @map("provider_event_id")
+  merchantOrderReference String?   @map("merchant_order_reference")
+  eventType              String    @map("event_type")
+  verificationResult     String    @map("verification_result")
+  payloadHash            String?   @map("payload_hash")
+  receivedAt             DateTime  @default(now()) @map("received_at") @db.Timestamptz
+  processedAt            DateTime? @map("processed_at") @db.Timestamptz
+  processingResult       String?   @map("processing_result")
+
+  @@index([merchantOrderReference])
+  @@map("payment_events")
+}
+
+model AdminUser {
+  id           String               @id @default(uuid()) @db.Uuid
+  email        String               @unique
+  passwordHash String               @map("password_hash")
+  role         String               @default("ADMIN")
+  isActive     Boolean              @default(true) @map("is_active")
+  lastLoginAt  DateTime?            @map("last_login_at") @db.Timestamptz
+  statusChanges OrderStatusHistory[]
+  createdAt    DateTime             @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime             @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("admin_users")
+}
+
+model OrderStatusHistory {
+  id               String     @id @default(uuid()) @db.Uuid
+  orderId          String     @map("order_id") @db.Uuid
+  order            Order      @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  oldStatus        String?    @map("old_status")
+  newStatus        String     @map("new_status")
+  changedByAdminId String?    @map("changed_by_admin_id") @db.Uuid
+  changedByAdmin   AdminUser? @relation(fields: [changedByAdminId], references: [id], onDelete: Restrict)
+  reason           String?
+  createdAt        DateTime   @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("order_status_history")
+}

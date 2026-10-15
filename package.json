@@ -1,0 +1,19 @@
+{
+  "name": "tulsi-swaraj",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tulsi Swaraj E-commerce Platform Monorepo",
+  "packageManager": "pnpm@10.26.2",
+  "scripts": {
+    "dev:api": "pnpm --filter @tulsi/api dev",
+    "dev:web": "pnpm --filter tulsimlm-prototype dev",
+    "build": "pnpm -r run build",
+    "typecheck": "pnpm -r run typecheck",
+    "lint": "pnpm -r run lint",
+    "test": "pnpm -r run test",
+    "clean": "pnpm -r run clean"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}

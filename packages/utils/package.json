@@ -1,0 +1,16 @@
+{
+  "name": "@tulsi/utils",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared framework-independent utility functions",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
