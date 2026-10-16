@@ -71,7 +71,7 @@ export const CartPage: React.FC = () => {
               {items.map((item) => (
                 <div key={item.product.id} className="py-5 first:pt-0 last:pb-0 flex flex-row gap-3.5 sm:gap-6 items-start">
                   <img
-                    src={item.product.images[0]?.url || '/images/product_primary.jpg'}
+                    src={item.product.images[0]?.url || '/images/product_primary.png'}
                     alt={item.product.name}
                     className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl border border-[#E5DFD3] bg-[#EFE9DB] shrink-0"
                   />

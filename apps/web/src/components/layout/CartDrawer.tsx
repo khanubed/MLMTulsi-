@@ -98,7 +98,7 @@ export const CartDrawer: React.FC = () => {
                     <img
                       src={
                         item.product.images[0]?.url ||
-                        "/images/product_primary.jpg"
+                        "/images/product_primary.png"
                       }
                       alt={item.product.name}
                       className="w-20 h-20 object-cover rounded-sm border border-[#E5DFD3] bg-[#EFE9DB] shrink-0"

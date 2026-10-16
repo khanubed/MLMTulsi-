@@ -2,9 +2,10 @@ import React, { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { Sparkles, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
+
 
 interface IngredientCoord {
   x: number;
@@ -13,6 +14,8 @@ interface IngredientCoord {
 
 interface BreakpointConfig {
   capStartY: number;
+  capInitialRotation: number;
+  bottleTravelX: number;
   bottleTravelY: number;
   tulsi: IngredientCoord;
   amla: IngredientCoord;
@@ -26,6 +29,8 @@ interface BreakpointConfig {
 // -------------------------------------------------------------------------
 // Edit the values below to easily adjust positions across screen sizes:
 // - capStartY: Starting height of the cap before scroll (more negative = higher up)
+// - capInitialRotation: Tilt angle of cap in initial state (degrees)
+// - bottleTravelX: Horizontal shift into the 60% right column on desktop
 // - bottleTravelY: How far the assembled bottle travels down into Section 2
 // - tulsi, amla, herbs, lahsun, shilajit: (x, y) radial positions around bottle
 // =========================================================================
@@ -34,37 +39,45 @@ const RESPONSIVE_LAYOUTS: {
   tablet: BreakpointConfig;
   mobile: BreakpointConfig;
 } = {
-  // Desktop screens (>= 1024px)
+  // Desktop screens (>= 1024px) - Centered layout
   desktop: {
-    capStartY: -250, // <-- CAP START HEIGHT: Change this to start higher (e.g. -300) or lower (e.g. -180)
-    bottleTravelY: 70, // <-- BOTTLE DOWNWARD TRAVEL: How far bottle moves down into Section 2
+    capStartY: -300, // <-- CAP START HEIGHT: Change this to start higher (e.g. -300) or lower (e.g. -180)
+    capInitialRotation: -30, // <-- CAP ROTATION: Initial tilt in degrees before assembly
+    bottleTravelX: 0, // <-- CENTERED IN SECTION 2: Bottle remains horizontally in the center
+    bottleTravelY: 75, // <-- BOTTLE DOWNWARD TRAVEL: Height in Section 2
     tulsi: { x: 0, y: -250 }, // Top Apex
-    amla: { x: -215, y: -75 }, // Upper Left
-    herbs: { x: 215, y: -75 }, // Upper Right
-    lahsun: { x: -195, y: 90 }, // Lower Left
-    shilajit: { x: 195, y: 90 }, // Lower Right
+    amla: { x: -250, y: -100 }, // Upper Left
+    herbs: { x: 250, y: -100 }, // Upper Right
+    lahsun: { x: -225, y: 85 }, // Lower Left
+    shilajit: { x: 225, y: 85 }, // Lower Right
   },
-  // Tablet screens (640px to 1023px)
+
+  // Tablet screens (640px to 1023px) - Centered layout
   tablet: {
-    capStartY: -120, // <-- Tablet cap start height
+    capStartY: -350, // <-- Tablet cap start height
+    capInitialRotation: -10,
+    bottleTravelX: 0, // Centered horizontally
     bottleTravelY: 55, // <-- Tablet bottle travel distance
-    tulsi: { x: 0, y: -160 },
+    tulsi: { x: 0, y: -250 },
     amla: { x: -170, y: -60 },
     herbs: { x: 170, y: -60 },
     lahsun: { x: -155, y: 75 },
     shilajit: { x: 155, y: 75 },
   },
-  // Mobile screens (< 640px)
+  // Mobile screens (< 640px) - Compact centered layout
   mobile: {
-    capStartY: -100, // <-- Mobile cap start height
+    capStartY: -400, // <-- Mobile cap start height
+    capInitialRotation: -8,
+    bottleTravelX: 0, // Centered horizontally
     bottleTravelY: 40, // <-- Mobile bottle travel distance
-    tulsi: { x: 0, y: -135 },
+    tulsi: { x: 0, y: -200 },
     amla: { x: -125, y: -60 },
     herbs: { x: 125, y: -60 },
     lahsun: { x: -115, y: 75 },
     shilajit: { x: 115, y: 75 },
   },
 };
+
 
 export const ProductAssembleSection: React.FC = () => {
   // Master container spanning both full-screen sections
@@ -80,7 +93,10 @@ export const ProductAssembleSection: React.FC = () => {
   // Section 2: Full-Screen Ingredient Showcase
   const section2Ref = useRef<HTMLElement>(null);
   const sec2HeaderRef = useRef<HTMLDivElement>(null);
+  void sec2HeaderRef;
   const sec2FooterRef = useRef<HTMLDivElement>(null);
+  void sec2FooterRef;
+
 
   // Shared Persistent Visual Stage
   const stageMotionGroupRef = useRef<HTMLDivElement>(null);
@@ -140,9 +156,12 @@ export const ProductAssembleSection: React.FC = () => {
 
           // If reduced motion is preferred, render settled static state
           if (reduceMotion) {
-            gsap.set(capRef.current, { y: 0 });
+            gsap.set(capRef.current, { y: 0, rotation: 0, x: 0 });
             gsap.set(shadowRef.current, { scale: 1, opacity: 0.65 });
-            gsap.set(stageMotionGroupRef.current, { y: config.bottleTravelY });
+            gsap.set(stageMotionGroupRef.current, {
+              x: config.bottleTravelX,
+              y: config.bottleTravelY,
+            });
 
             const items = [
               { ref: tulsiRef.current, coord: config.tulsi },
@@ -164,10 +183,14 @@ export const ProductAssembleSection: React.FC = () => {
             return;
           }
 
-          // Initial state setup
-          gsap.set(capRef.current, { y: config.capStartY });
+          // Initial state setup with cap rotation
+          gsap.set(capRef.current, {
+            y: config.capStartY,
+            rotation: config.capInitialRotation,
+            x: 0,
+          });
           gsap.set(shadowRef.current, { scale: 0.75, opacity: 0.35 });
-          gsap.set(stageMotionGroupRef.current, { y: 0 });
+          gsap.set(stageMotionGroupRef.current, { x: 0, y: 0 });
 
           const ingredientNodes = [
             tulsiRef.current,
@@ -185,16 +208,17 @@ export const ProductAssembleSection: React.FC = () => {
 
           // =========================================================================
           // TIMELINE 1: BOTTLE ASSEMBLY (Section 1)
-          // The cap descends smoothly to form an airtight lock with container opening
+          // The cap descends smoothly from its tilted angle to form an airtight lock
+          // Followed by a generous hold so the assembled bottle remains stable on scroll
           // =========================================================================
           const assemblyTimeline = gsap.timeline({
             scrollTrigger: {
               trigger: section1Ref.current,
               start: "top top",
-              end: "+=75%",
+              end: "+=120%", // Generous scroll distance for smooth assembly + hold
               pin: true,
               pinSpacing: true,
-              scrub: 0.8,
+              scrub: 1, // Smooth scrub matched with Lenis
               invalidateOnRefresh: true,
             },
           });
@@ -202,56 +226,68 @@ export const ProductAssembleSection: React.FC = () => {
           assemblyTimeline
             .fromTo(
               capRef.current,
-              // Starting position: uses config.capStartY (e.g. -250 on desktop)
-              { y: config.capStartY, x: 0 },
-              // Final landing position when assembled:
-              // - y: 0 is the exact mathematical seam lock.
-              // - Increase y (e.g. y: 4) to make cap sit lower into the bottle neck.
-              // - Decrease y (e.g. y: -4) to make cap sit higher with a gap.
-              // - Add x (e.g. x: 2) if you ever need to nudge the cap left/right.
-              { y: 0, x: 0, ease: "power2.inOut", duration: 1 },
+              // Starting position: uses config.capStartY and tilted rotation (e.g. -14deg)
+              {
+                y: config.capStartY,
+                rotation: config.capInitialRotation,
+                x: 0,
+              },
+              // Final landing position: straightens to rotation: 0 and locks seamlessly at y: 0
+              {
+                y: 0,
+                rotation: 0,
+                x: 0,
+                ease: "power2.inOut",
+                duration: 0.8,
+              },
             )
             .fromTo(
               shadowRef.current,
               { scale: 0.75, opacity: 0.35 },
-              { scale: 1, opacity: 0.65, ease: "power2.inOut", duration: 1 },
+              { scale: 1, opacity: 0.65, ease: "power2.inOut", duration: 0.8 },
               0,
             )
-            // Deliberate appreciation hold (increase duration to keep assembled bottle held longer)
-            .to({}, { duration: 0.5 });
+            // Generous appreciation hold: assembled bottle remains completely stable across ~60% of the scroll
+            .to({}, { duration: 1.2 });
 
           // =========================================================================
           // TIMELINE 2: BOTTLE TRANSITION (Between Section 1 & Section 2)
-          // The assembled bottle glides down smoothly, carrying user into Section 2
+          // On desktop, the bottle glides down and shifts into the 60% right canvas
           // =========================================================================
           const transitionTimeline = gsap.timeline({
             scrollTrigger: {
               trigger: section2Ref.current,
               start: "top bottom",
               end: "top top",
-              scrub: 0.8,
+              scrub: 1, // Smooth scrub matched with Lenis
               invalidateOnRefresh: true,
             },
           });
 
           transitionTimeline.fromTo(
             stageMotionGroupRef.current,
-            { y: 0 },
-            { y: config.bottleTravelY, ease: "power1.inOut" },
+            { x: 0, y: 0 },
+            {
+              x: config.bottleTravelX,
+              y: config.bottleTravelY,
+              ease: "power1.inOut",
+            },
           );
+
 
           // =========================================================================
           // TIMELINE 3: INGREDIENT REVEAL (Section 2)
           // 5 Sacred Botanicals emerge radially from behind the bottle
+          // Followed by a solid hold so user can view the complete radial composition
           // =========================================================================
           const ingredientTimeline = gsap.timeline({
             scrollTrigger: {
               trigger: section2Ref.current,
               start: "top top",
-              end: "+=85%",
+              end: "+=135%", // Generous scroll distance for bloom + hold
               pin: true,
               pinSpacing: true,
-              scrub: 0.8,
+              scrub: 1, // Smooth scrub matched with Lenis
               invalidateOnRefresh: true,
             },
           });
@@ -266,7 +302,7 @@ export const ProductAssembleSection: React.FC = () => {
                 scale: 1,
                 opacity: 1,
                 ease: "power2.out",
-                duration: 0.7,
+                duration: 0.65,
               },
             )
             .fromTo(
@@ -278,7 +314,7 @@ export const ProductAssembleSection: React.FC = () => {
                 scale: 1,
                 opacity: 1,
                 ease: "power2.out",
-                duration: 0.7,
+                duration: 0.65,
               },
               0.08,
             )
@@ -291,7 +327,7 @@ export const ProductAssembleSection: React.FC = () => {
                 scale: 1,
                 opacity: 1,
                 ease: "power2.out",
-                duration: 0.7,
+                duration: 0.65,
               },
               0.16,
             )
@@ -304,7 +340,7 @@ export const ProductAssembleSection: React.FC = () => {
                 scale: 1,
                 opacity: 1,
                 ease: "power2.out",
-                duration: 0.7,
+                duration: 0.65,
               },
               0.24,
             )
@@ -317,12 +353,13 @@ export const ProductAssembleSection: React.FC = () => {
                 scale: 1,
                 opacity: 1,
                 ease: "power2.out",
-                duration: 0.7,
+                duration: 0.65,
               },
               0.32,
             )
-            // Settled appreciation hold
-            .to({}, { duration: 0.45 });
+            // Generous appreciation hold: complete radial composition stays locked and readable
+            .to({}, { duration: 1.35 });
+
         },
       );
 
@@ -499,7 +536,7 @@ export const ProductAssembleSection: React.FC = () => {
           ref={watermarkRef}
           className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0"
         >
-          <span className="text-[13vw] font-serif font-black tracking-tight text-[#183F32]/[0.05] whitespace-nowrap will-change-transform">
+          <span className="text-[8vw] font-serif font-black tracking-tight text-[#183F32]/[0.05] whitespace-nowrap will-change-transform">
             TULSI SWAROJGAR
           </span>
         </div>
@@ -538,55 +575,18 @@ export const ProductAssembleSection: React.FC = () => {
 
       {/* =========================================================================
           SECTION 2 — Full-Screen Ingredient Showcase
-          Genuinely separate semantic section with radial ingredient presentation
+          Centered radial composition around bottle across all breakpoints
           ========================================================================= */}
       <section
         ref={section2Ref}
         id="section-ingredient-showcase"
-        className="relative w-full min-h-[100svh] flex flex-col justify-between items-center px-6 sm:px-12 py-12 sm:py-16 text-center select-none"
+        className="relative w-full min-h-[100svh] flex items-center justify-center px-6 sm:px-10 py-12 select-none overflow-hidden"
       >
-        {/* Section 2 Header */}
-        <div
-          ref={sec2HeaderRef}
-          className="relative z-10 max-w-xl mx-auto space-y-2 mt-2 sm:mt-4"
-        >
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#183F32]/5 border border-[#183F32]/15 text-[11px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-[#B49A63]">
-            <Sparkles className="w-3.5 h-3.5 text-[#B49A63]" />5 Sacred
-            Ayurvedic Pillars
-          </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[#183F32] font-normal tracking-tight">
-            Synergistic Botanical Alchemy
-          </h2>
-          <p className="text-xs sm:text-sm text-[#77796F] max-w-lg mx-auto leading-relaxed font-light">
-            Pure wild-foraged adaptogens cold-ground to bioavailable perfection,
-            blossoming outward from the heart of the vessel.
-          </p>
-        </div>
-
-        {/* Vertical clearance reserved for blooming ingredient radial stage */}
-        <div className="w-full h-56 sm:h-64 pointer-events-none" />
-
-        {/* Section 2 Trust Markers */}
-        <div
-          ref={sec2FooterRef}
-          className="relative z-10 max-w-2xl mx-auto pb-2"
-        >
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs text-[#183F32] font-medium">
-            <span className="px-3 py-1 rounded-full bg-white/70 border border-[#E5DFD3] shadow-xs">
-              100% Wild Harvested
-            </span>
-            <span className="px-3 py-1 rounded-full bg-white/70 border border-[#E5DFD3] shadow-xs">
-              Zero Synthetics or Fillers
-            </span>
-            <span className="px-3 py-1 rounded-full bg-white/70 border border-[#E5DFD3] shadow-xs">
-              Vedic Cold Extraction
-            </span>
-            <span className="px-3 py-1 rounded-full bg-white/70 border border-[#E5DFD3] shadow-xs">
-              Lab-Tested Purity
-            </span>
-          </div>
-        </div>
+        {/* Central spacer reserving the full-viewport radial ingredient stage */}
+        <div className="w-full h-[380px] sm:h-[460px] lg:h-[540px] pointer-events-none relative flex items-center justify-center" />
       </section>
+
+
     </div>
   );
 };

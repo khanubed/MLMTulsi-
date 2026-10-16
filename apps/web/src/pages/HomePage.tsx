@@ -50,12 +50,12 @@ export const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#F8F5ED]">
       {/* 1. HERO SECTION - FULL-WIDTH CINEMATIC BACKGROUND VIDEO */}
-      <section className="relative overflow-hidden min-h-[580px] sm:min-h-[640px] lg:h-[720px] lg:max-h-[780px] flex items-center bg-[#183F32] border-b border-[#285642]/60">
+      <section className="relative overflow-hidden min-h-screen lg:h-[720px] lg:max-h-[780px] flex items-center bg-[#183F32] border-b border-[#285642]/60">
         {/* Cinematic Background Video with Poster Fallback & Prefers-Reduced-Motion */}
         <div className="absolute inset-0 w-full h-full overflow-hidden">
           {prefersReducedMotion || videoError ? (
             <img
-              src="/images/hero_botanical.jpg"
+              src="/images/hero_botanical.png"
               alt="Tulsi Swaraj Herbal Preparation"
               className="w-full h-full object-cover object-[68%_center] sm:object-[68%_center] lg:object-[70%_center]"
             />
@@ -66,9 +66,9 @@ export const HomePage: React.FC = () => {
               loop
               playsInline
               preload="metadata"
-              poster="/images/hero_botanical.jpg"
+              poster="/images/hero_botanical.png"
               onError={() => setVideoError(true)}
-              className="w-full h-full object-cover object-[65%_center] sm:object-[68%_center] lg:object-[70%_center]"
+              className="w-full h-full object-cover object-[50%_center] sm:object-[68%_center] lg:object-[70%_center]"
             >
               <source src="/videos/hero-video.mp4" type="video/mp4" />
             </video>
@@ -77,7 +77,7 @@ export const HomePage: React.FC = () => {
           {/* Subtle Forest-Green Gradient Overlay */}
           {/* Mobile: Stronger vertical-to-horizontal gradient to ensure compact text stays readable while product shines */}
           {/* Desktop: Strongest on left (for text), gradually transparent towards center-right (for jar & label visibility) */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#183F32]/95 via-[#183F32]/75 to-[#183F32]/45 sm:bg-gradient-to-r sm:from-[#183F32]/95 sm:via-[#183F32]/70 sm:to-transparent lg:from-[#183F32]/95 lg:via-[#183F32]/60 lg:to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#183F32]/50 via-[#183F32]/25 to-[#183F32]/20 sm:bg-gradient-to-r sm:from-[#183F32]/50 sm:via-[#183F32]/70 sm:to-transparent lg:from-[#183F32]/95 lg:via-[#183F32]/60 lg:to-transparent pointer-events-none" />
 
           {/* Bottom subtle edge vignette */}
           <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#183F32]/60 to-transparent pointer-events-none" />
@@ -483,7 +483,7 @@ export const HomePage: React.FC = () => {
             <div className="lg:col-span-5">
               <div className="rounded-xl overflow-hidden shadow-xl border border-[#E5DFD3] bg-white aspect-square">
                 <img
-                  src="/images/product_lifestyle.jpg"
+                  src="/images/product_lifestyle.png"
                   alt="Herbal morning tea infusion ritual with Tulsi Meta Ved jar"
                   className="w-full h-full object-cover"
                 />

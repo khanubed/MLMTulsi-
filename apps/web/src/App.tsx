@@ -1,8 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { CartDrawer } from './components/layout/CartDrawer';
+
+gsap.registerPlugin(ScrollTrigger);
+
 
 import { HomePage } from './pages/HomePage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
@@ -28,21 +35,63 @@ import { DashboardSupportPage } from './pages/DashboardSupportPage';
 import { DashboardReferralPage } from './pages/DashboardReferralPage';
 
 // Scroll to top on route navigation
-const ScrollToTop: React.FC = () => {
+const ScrollToTop: React.FC<{ lenisRef: React.RefObject<Lenis | null> }> = ({ lenisRef }) => {
   const { pathname } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, lenisRef]);
   return null;
 };
 
 export const App: React.FC = () => {
+  const lenisRef = useRef<Lenis | null>(null);
+
+  useEffect(() => {
+    // Check if user prefers reduced motion
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    // Initialize Lenis smooth scroll
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 0.9,
+      touchMultiplier: 1.5,
+    });
+
+    lenisRef.current = lenis;
+
+    // Synchronize Lenis scroll with GSAP ScrollTrigger
+    lenis.on('scroll', ScrollTrigger.update);
+
+    const updateRaf = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+
+    gsap.ticker.add(updateRaf);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      gsap.ticker.remove(updateRaf);
+      lenis.destroy();
+      lenisRef.current = null;
+    };
+  }, []);
+
   return (
     <BrowserRouter>
-      <ScrollToTop />
+      <ScrollToTop lenisRef={lenisRef} />
       <div className="flex flex-col min-h-screen bg-[#F8F5ED] text-[#252923]">
         <Navbar />
         <CartDrawer />
+
 
         <main className="flex-1">
           <Routes>

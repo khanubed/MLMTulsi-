@@ -35,19 +35,13 @@ export const Navbar: React.FC = () => {
             {/* Logo */}
             <Link
               to="/"
-              className="flex items-center gap-2 sm:gap-3 group shrink-0"
+              className="flex items-center shrink-0 py-1 transition-opacity hover:opacity-90"
             >
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#183F32] flex items-center justify-center text-[#F8F5ED] shadow-sm group-hover:bg-[#285642] transition-colors shrink-0">
-                <Leaf className="w-4 h-4 sm:w-5 sm:h-5 text-[#A9B7A0]" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-[#183F32] leading-none">
-                  Tulsi Swaraj
-                </span>
-                <span className="hidden sm:inline text-[9px] sm:text-[10px] tracking-[0.2em] uppercase text-[#77796F] font-semibold mt-0.5">
-                  Ayurvedic Botanical Living
-                </span>
-              </div>
+              <img
+                src="/images/logo.png"
+                alt="Tulsi Swarojgar Pvt. Limited"
+                className="h-16 sm:h-20 w-auto object-contain"
+              />
             </Link>
 
             {/* Desktop Navigation */}

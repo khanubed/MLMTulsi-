@@ -1,5 +1,24 @@
 @import "tailwindcss";
 
+/* =========================================================================
+   TAILWIND V4 THEME CONFIGURATION (MATCHING PRODUCT DETAIL PAGE)
+   ========================================================================= */
+@theme {
+  --font-sans: "DM Sans", "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-heading: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "DM Sans", "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --color-forest-green: #183F32;
+  --color-botanical-green: #285642;
+  --color-muted-sage: #A9B7A0;
+  --color-warm-ivory: #F8F5ED;
+  --color-soft-cream: #EFE9DB;
+  --color-natural-charcoal: #252923;
+  --color-muted-stone: #77796F;
+  --color-antique-brass: #B49A63;
+}
+
 @layer base {
   :root {
     --forest-green: #183F32;
@@ -12,7 +31,7 @@
     --antique-brass: #B49A63;
     --white: #FFFFFF;
 
-    /* Typography */
+    /* Typography tokens from ProductDetailPage (Manrope + DM Sans) */
     --font-heading: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --font-body: "DM Sans", "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
@@ -35,9 +54,10 @@
     max-width: 100%;
     overflow-x: clip;
     font-family: var(--font-body);
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 400;
     line-height: 1.6;
+    letter-spacing: -0.01em;
     background-color: var(--warm-ivory);
     color: var(--natural-charcoal);
     margin: 0;
@@ -47,11 +67,17 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  button, input, select, textarea {
+  button,
+  input,
+  select,
+  textarea {
     font-family: var(--font-body);
   }
 
-  /* Manrope Headings */
+  /* =========================================================================
+     MANROPE HEADINGS HIERARCHY (AS SEEN IN PRODUCT DETAIL PAGE)
+     Crisp modern geometry, tight letter-spacing, and deep forest-green tones
+     ========================================================================= */
   h1,
   h2,
   h3,
@@ -61,38 +87,41 @@
     font-family: var(--font-heading);
     color: var(--forest-green);
     font-weight: 700;
-    letter-spacing: -0.025em;
-    line-height: 1.2;
+    letter-spacing: -0.03em;
+    line-height: 1.22;
     text-wrap: balance;
   }
 
   h1 {
-    font-weight: 700;
-    letter-spacing: -0.045em;
+    font-size: clamp(1.85rem, 4vw, 2.35rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.18;
   }
 
   h2 {
-    font-weight: 700;
-    letter-spacing: -0.035em;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 750;
+    letter-spacing: -0.03em;
+    line-height: 1.22;
   }
 
-  h3,
+  h3 {
+    font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+  }
+
   h4,
   h5,
   h6 {
     font-weight: 650;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.02em;
   }
 
   p {
     text-wrap: pretty;
-  }
-
-  button,
-  input,
-  select,
-  textarea {
-    font: inherit;
   }
 
   /* Prevent automatic iOS zooming on form field tap */
@@ -143,7 +172,55 @@
   }
 }
 
-/* Background utilities */
+/* =========================================================================
+   PDP-INSPIRED TYPOGRAPHY UTILITIES
+   ========================================================================= */
+
+/* Direct mapping: Ensures any font-serif in the project renders in crisp Manrope */
+.font-serif {
+  font-family: var(--font-heading) !important;
+  letter-spacing: -0.03em;
+}
+
+.font-heading {
+  font-family: var(--font-heading) !important;
+}
+
+.font-body {
+  font-family: var(--font-body) !important;
+}
+
+/* Botanical metadata eyebrow / badge */
+.typography-eyebrow {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--antique-brass);
+}
+
+/* Price & numeric highlights */
+.typography-price {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+  color: var(--forest-green);
+}
+
+/* Subtitle and editorial narrative */
+.typography-subtitle {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--muted-stone);
+  line-height: 1.62;
+  font-weight: 400;
+}
+
+/* =========================================================================
+   COLOR & BACKGROUND UTILITIES
+   ========================================================================= */
 .bg-warm-ivory {
   background-color: #F8F5ED;
 }
@@ -168,7 +245,6 @@
   background-color: #B49A63;
 }
 
-/* Text utilities */
 .text-natural-charcoal {
   color: #252923;
 }
@@ -193,7 +269,6 @@
   color: #F8F5ED;
 }
 
-/* Border utilities */
 .border-forest-green {
   border-color: #183F32;
 }

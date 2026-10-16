@@ -13,19 +13,25 @@ export const FLAGSHIP_PRODUCT: Product = {
   images: [
     {
       id: 'img-1',
-      url: '/images/product_primary.jpg',
-      alt: 'Tulsi Meta Ved Herbal Mix ceramic jar and tulsi leaves',
+      url: '/images/product_primary.png',
+      alt: 'Tulsi Meta Ved Herbal Mix bottle presentation',
       caption: 'Front product presentation'
     },
     {
+      id: 'img-back',
+      url: '/images/product_back.png',
+      alt: 'Tulsi Meta Ved Herbal Mix back label showing ingredients, dose, and directions for use',
+      caption: 'Back label: Ingredients, Dose & Directions'
+    },
+    {
       id: 'img-2',
-      url: '/images/product_lifestyle.jpg',
+      url: '/images/product_lifestyle.png',
       alt: 'Tulsi Meta Ved jar on wooden table with herbal tea infusion',
       caption: 'Morning ritual lifestyle composition'
     },
     {
       id: 'img-3',
-      url: '/images/hero_botanical.jpg',
+      url: '/images/hero_botanical.png',
       alt: 'Product on limestone pedestal with organic botanical foliage',
       caption: 'Studio pedestal view'
     },
@@ -39,33 +45,36 @@ export const FLAGSHIP_PRODUCT: Product = {
   specifications: [
     { label: 'Selling Price', value: '₹500 (Inclusive of applicable taxes)' },
     { label: 'Form', value: 'Fine Herbal Mix Powder' },
-    { label: 'Net Weight', value: '100g (Pending final batch confirmation)', isPlaceholder: true },
+    { label: 'Net Weight', value: '100g (Verified bottle packaging)' },
     { label: 'Origin', value: 'Sourced & Made in India' },
-    { label: 'Shelf Life', value: '12 Months from packaging (Pending batch stamp)', isPlaceholder: true },
-    { label: 'Storage', value: 'Store in a cool, dry place away from direct sunlight' }
+    { label: 'Shelf Life', value: '12 Months from packaging (See bottle base for batch stamp)' },
+    { label: 'Storage', value: 'Store in a cool, dry place away from direct sunlight. Keep out of reach of children.' }
   ],
-  ingredientsListStatus: 'pending',
+  ingredientsListStatus: 'verified',
   verifiedIngredients: [
-    'Ocimum Sanctum (Krishna Tulsi)',
-    'Ocimum Gratissimum (Rama Tulsi)',
-    'Zingiber Officinale (Dry Ginger - pending lab ratio)',
-    'Traditional botanical synergy base (Exact percentages pending business certificate)'
+    'Ginger powder (Sonth)',
+    'Fenugreek (Methi)',
+    'Dill (Sowa)',
+    'Ajwain (Carom seeds)',
+    'Tulsi Powder (Holy Basil)',
+    'Cumin (Jeera)',
+    'Black Pepper (Kali Mirch)'
   ],
   usageInstructions: [
     {
       step: 1,
-      title: 'Warm Infusion',
-      description: 'Take half a teaspoon of Tulsi Meta Ved Herbal Mix in a cup of freshly boiled warm water or milk.'
+      title: 'Dose & Timing',
+      description: 'Take 1 to 2 teaspoons in the morning and evening, or as directed by your healthcare worker.'
     },
     {
       step: 2,
-      title: 'Stir & Rest',
-      description: 'Stir well and let the herbs steep gently for 2 to 3 minutes to awaken the botanical oils.'
+      title: 'Warm Preparation',
+      description: 'Mix with warm water, milk, or prepare as a decoction according to your body condition.'
     },
     {
       step: 3,
-      title: 'Mindful Sip',
-      description: 'Enjoy warm as part of your morning mindfulness or evening wind-down routine.'
+      title: 'Precaution',
+      description: 'Do not consume during pregnancy. Keep out of reach of children. (गर्भावस्था के दौरान इस उत्पाद का सेवन न करें।)'
     }
   ]
 };

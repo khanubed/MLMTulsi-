@@ -130,7 +130,7 @@ export const DashboardOrderDetailPage: React.FC = () => {
               <div className="flex items-center gap-4">
                 <img
                   src={
-                    item.product.images[0]?.url || "/images/product_primary.jpg"
+                    item.product.images[0]?.url || "/images/product_primary.png"
                   }
                   alt={item.product.name}
                   className="w-16 h-16 rounded-md object-cover border border-[#E5DFD3] bg-[#EFE9DB]"

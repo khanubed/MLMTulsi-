@@ -111,7 +111,7 @@ export const OrderConfirmationPage: React.FC = () => {
                     <img
                       src={
                         item.product.images[0]?.url ||
-                        "/images/product_primary.jpg"
+                        "/images/product_primary.png"
                       }
                       alt={item.product.name}
                       className="w-12 h-12 rounded-sm object-cover border border-[#E5DFD3] bg-[#EFE9DB]"
