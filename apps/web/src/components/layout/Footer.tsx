@@ -106,7 +106,7 @@ export const Footer: React.FC = () => {
                   to="/products/tulsi-meta-ved-herbal-mix"
                   className="hover:text-white transition-colors"
                 >
-                  Tulsi Meta Ved Mix (₹500)
+                  Tulsi Meta Ved Mix ( <span className="font-medium line-through">₹1000</span> ₹500)
                 </Link>
               </li>
               <li>

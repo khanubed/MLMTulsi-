@@ -205,14 +205,26 @@
   3. _Elimination of Times New Roman / Generic Browser Serifs:_ Explicitly mapped `.font-serif` to `var(--font-heading) !important` with `-0.03em` letter-spacing, converting all existing `.font-serif` usage across `HomePage` and components to crisp, modern Manrope.
   4. _Heading Hierarchy in `@layer base`:_ Configured `h1` through `h6` with `font-family: var(--font-heading)`, deep botanical forest green (`#183F32`), tight tracking (`-0.03em` to `-0.04em`), and balanced line heights.
   5. _Typography Utility Classes:_ Added `.typography-eyebrow` (antique brass `#B49A63`, tracking `0.18em`), `.typography-price` (Manrope tabular-nums), and `.typography-subtitle`.
-- **Outcome:** Clean, high-end editorial aesthetic unified across the entire storefront, perfectly matching the typography of the flagship product detail page.
-
 ### [2026-10-15 21:07 IST] - Storefront Navbar Official Logo Integration
-
 - **Action:** Updated [Navbar.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/layout/Navbar.tsx):
   - Replaced the text and generic Leaf icon with the official brand logo image (`/images/logo.png`, "Tulsi Swarojgar Pvt. Limited").
   - Set responsive scaling (`h-10 sm:h-14 w-auto object-contain`) and smooth hover opacity transition within the home navigation link.
-- **Outcome:** The storefront header showcases the official company logo with pristine brand fidelity.
+### [2026-10-17 13:28 IST] - Mobile Hero Action Buttons Arranged 2 in a Row
+- **Action:** Updated [HomePage.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/pages/HomePage.tsx#L114-L129):
+  - Changed the action buttons layout to `grid grid-cols-2 sm:flex sm:flex-row items-center justify-start gap-2.5 sm:gap-4`.
+  - Configured responsive sizing (`text-xs sm:text-sm`, `px-3 sm:px-7`, `py-3 sm:py-3.5`) so both "Explore Product" and "Our Story" sit cleanly side-by-side on mobile devices without vertical stacking.
+### [2026-10-17 13:30 IST] - Hero Gradient Update (Dark Green at Bottom on Mobile, Left-to-Right on Desktop)
+- **Action:** Updated [HomePage.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/pages/HomePage.tsx#L80):
+  - Configured `bg-gradient-to-t from-[#183F32]/95 via-[#183F32]/60 to-transparent sm:bg-gradient-to-r sm:from-[#183F32]/95 sm:via-[#183F32]/60 sm:to-transparent`.
+  - On mobile, dark forest green is positioned at the bottom with transparent at the top, providing maximum contrast for bottom action buttons and trust markers.
+  - On desktop, the horizontal gradient flows from dark green on the left to transparent on the right, keeping text legible while showing the product jar.
+- **Outcome:** Consistent brand aesthetic across screen sizes with optimal contrast for text and buttons.
+
+### [2026-10-17 13:38 IST] - Hero Section Mobile Spacing Separation
+- **Action:** Refined [HomePage.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/pages/HomePage.tsx#L85-L165):
+  - Segmented the left hero column into two distinct blocks: the Top Block (Eyebrow, Headline, Paragraph) and Bottom Block (Trust Markers, Action Buttons).
+  - Added dedicated mobile separation (`mt-12 sm:mt-6`) between the top narrative and the bottom trust/action block.
+- **Outcome:** Clean visual breathing room in the middle on mobile, leaving the background product video unobstructed while preserving tight cohesive flow on desktop.
 
 ---
 

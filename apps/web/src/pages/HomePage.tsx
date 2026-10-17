@@ -77,7 +77,7 @@ export const HomePage: React.FC = () => {
           {/* Subtle Forest-Green Gradient Overlay */}
           {/* Mobile: Stronger vertical-to-horizontal gradient to ensure compact text stays readable while product shines */}
           {/* Desktop: Strongest on left (for text), gradually transparent towards center-right (for jar & label visibility) */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#183F32]/50 via-[#183F32]/25 to-[#183F32]/20 sm:bg-gradient-to-r sm:from-[#183F32]/50 sm:via-[#183F32]/70 sm:to-transparent lg:from-[#183F32]/95 lg:via-[#183F32]/60 lg:to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#183F32]/95 via-[#183F32]/60 to-transparent sm:bg-gradient-to-r sm:from-[#183F32]/95 sm:via-[#183F32]/60 sm:to-transparent pointer-events-none" />
 
           {/* Bottom subtle edge vignette */}
           <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#183F32]/60 to-transparent pointer-events-none" />
@@ -85,75 +85,93 @@ export const HomePage: React.FC = () => {
 
         {/* Content Container: Kept within existing max-width container, text confined to left 45% */}
         <div className="relative z-10 w-full max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
-          <div className="w-full sm:max-w-xl lg:max-w-[48%] xl:max-w-[65%] space-y-5 sm:space-y-6 text-left">
-            {/* Eyebrow badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#183F32]/80 backdrop-blur-md border border-[#A9B7A0]/40 text-xs font-semibold text-[#F8F5ED] shadow-sm">
-              <Leaf className="w-3.5 h-3.5 text-[#A9B7A0]" />
-              <span>Ayurvedic Botanical Living</span>
-              <span className="text-[#B49A63]">·</span>
-              <span className="text-[#F8F5ED] font-bold">₹500</span>
-            </div>
-
-            {/* Main Headline */}
-            <h1 className="text-3xl sm:text-5xl lg:text-[54px] xl:text-6xl font-serif text-[#F8F5ED] leading-[1.12] tracking-tight">
-              Rooted in Nature.
-              <br />
-              <span className="italic font-normal text-[#A9B7A0] sm:text-[#F8F5ED]/90 block mt-1 sm:mt-2">
-                Made for Everyday Rituals.
-              </span>
-            </h1>
-
-            {/* Supporting Paragraph */}
-            <p className="text-sm sm:text-base lg:text-lg text-[#F8F5ED]/90 max-w-lg leading-relaxed font-sans">
-              Discover Tulsi Swaraj and our mindful approach to bringing pure,
-              thoughtfully prepared Indian herbal blends into your daily morning
-              and evening wellness routines.
-            </p>
-
-            {/* Action Buttons */}
-            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-3 sm:gap-4">
-              <button
-                onClick={() => navigate("/products/tulsi-meta-ved-herbal-mix")}
-                className="w-full sm:w-auto px-7 py-3.5 bg-[#F8F5ED] text-[#183F32] rounded-xl text-sm font-semibold tracking-wide hover:bg-white hover:shadow-lg transition-all shadow-md flex items-center justify-center gap-2 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#B49A63] focus:ring-offset-2 focus:ring-offset-[#183F32]"
-              >
-                Explore the Product
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-
-              <Link
-                to="/about"
-                className="w-full sm:w-auto px-7 py-3.5 bg-[#183F32]/40 border border-[#F8F5ED]/40 text-[#F8F5ED] hover:bg-[#F8F5ED]/15 backdrop-blur-sm rounded-xl text-sm font-semibold transition-colors text-center focus:outline-none focus:ring-2 focus:ring-[#B49A63] focus:ring-offset-2 focus:ring-offset-[#183F32]"
-              >
-                Our Story
-              </Link>
-            </div>
-
-            {/* Trust Markers */}
-            <div className="pt-5 grid grid-cols-3 gap-3 border-t border-[#F8F5ED]/20 text-left">
-              <div className="p-1">
-                <p className="font-serif text-base sm:text-lg font-bold text-[#F8F5ED]">
-                  100%
-                </p>
-                <p className="text-[11px] sm:text-xs text-[#A9B7A0] leading-tight mt-0.5">
-                  Botanical Heritage
-                </p>
-              </div>
-              <div className="p-1">
-                <p className="font-serif text-base sm:text-lg font-bold text-[#F8F5ED]">
+          <div className="w-full sm:max-w-xl lg:max-w-[48%] xl:max-w-[65%] text-left">
+            {/* Top Block: Eyebrow badge, Headline, Paragraph */}
+            <div className="space-y-5 sm:space-y-6">
+              {/* Eyebrow badge */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#183F32]/80 backdrop-blur-md border border-[#A9B7A0]/40 text-xs font-semibold text-[#F8F5ED] shadow-sm">
+                <Leaf className="w-3.5 h-3.5 text-[#A9B7A0]" />
+                <span>Ayurvedic Botanical Living</span>
+                <span className="text-[#B49A63]">·</span>
+                <span className="text-[#F8F5ED] font-bold">
+                  <span className="line-through mr-2 font-light text-xs">
+                    {" "}
+                    ₹1000{" "}
+                  </span>{" "}
                   ₹500
-                </p>
-                <p className="text-[11px] sm:text-xs text-[#A9B7A0] leading-tight mt-0.5">
-                  Transparent Price
-                </p>
+                </span>
               </div>
-              <div className="p-1">
-                <p className="font-serif text-base sm:text-lg font-bold text-[#F8F5ED]">
-                  Free
-                </p>
-                <p className="text-[11px] sm:text-xs text-[#A9B7A0] leading-tight mt-0.5">
-                  India Dispatch
-                </p>
+
+              {/* Main Headline */}
+              <h1 className="text-3xl sm:text-5xl lg:text-[54px] xl:text-6xl font-serif text-[#F8F5ED] leading-[1.12] tracking-tight">
+                Rooted in Nature.
+                <br />
+                <span className="italic font-normal text-[#F8F5ED]/90 block mt-1 sm:mt-2">
+                  Made for Everyday Rituals.
+                </span>
+              </h1>
+
+              {/* Supporting Paragraph */}
+              <p className="text-sm max-sm:pb-12 sm:text-base lg:text-lg text-[#F8F5ED]/90 max-w-lg leading-relaxed font-sans">
+                Discover Tulsi Swaraj and our mindful approach to bringing pure,
+                thoughtfully prepared Indian herbal blends into your daily
+                morning and evening wellness routines.
+              </p>
+            </div>
+
+            {/* Bottom Block: Trust Markers & Action Buttons with dedicated mobile spacing */}
+            <div className="mt-12 sm:mt-6 space-y-5">
+                           {/* Action Buttons - 2 in a row on mobile and desktop */}
+              <div className="sm:pt-2 pt-12  grid grid-cols-2 sm:flex sm:flex-row items-center justify-start gap-2.5 sm:gap-4">
+                <button
+                  onClick={() =>
+                    navigate("/products/tulsi-meta-ved-herbal-mix")
+                  }
+                  className="w-full sm:w-auto px-3 sm:px-7 py-3 sm:py-3.5 bg-[#F8F5ED] text-[#183F32] rounded-xl text-xs sm:text-sm font-semibold tracking-wide hover:bg-white hover:shadow-lg transition-all shadow-md flex items-center justify-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#B49A63] focus:ring-offset-2 focus:ring-offset-[#183F32]"
+                >
+                  <span>
+                    Explore <span className="hidden sm:inline">the </span>
+                    Product
+                  </span>
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform shrink-0" />
+                </button>
+
+                <Link
+                  to="/about"
+                  className="w-full sm:w-auto px-3 sm:px-7 py-3 sm:py-3.5 bg-[#183F32]/40 border border-[#F8F5ED]/40 text-[#F8F5ED] hover:bg-[#F8F5ED]/15 backdrop-blur-sm rounded-xl text-xs sm:text-sm font-semibold transition-colors text-center flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#B49A63] focus:ring-offset-2 focus:ring-offset-[#183F32]"
+                >
+                  Our Story
+                </Link>
               </div>
+              {/* Trust Markers */}
+              <div className="pt-5 grid grid-cols-3 gap-3 border-t border-[#F8F5ED]/20 text-left">
+                <div className="p-1">
+                  <p className="font-serif text-base sm:text-lg font-bold text-[#F8F5ED]">
+                    100%
+                  </p>
+                  <p className="text-[11px] sm:text-xs text-[#A9B7A0] leading-tight mt-0.5">
+                    Botanical Heritage
+                  </p>
+                </div>
+                <div className="p-1">
+                  <p className="font-serif text-base sm:text-lg font-bold text-[#F8F5ED]">
+                    ₹500
+                  </p>
+                  <p className="text-[11px] sm:text-xs text-[#A9B7A0] leading-tight mt-0.5">
+                    Transparent Price
+                  </p>
+                </div>
+                <div className="p-1">
+                  <p className="font-serif text-base sm:text-lg font-bold text-[#F8F5ED]">
+                    Free
+                  </p>
+                  <p className="text-[11px] sm:text-xs text-[#A9B7A0] leading-tight mt-0.5">
+                    India Dispatch
+                  </p>
+                </div>
+              </div>
+
+ 
             </div>
           </div>
         </div>
