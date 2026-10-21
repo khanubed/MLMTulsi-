@@ -6,7 +6,7 @@
   "packageManager": "pnpm@10.26.2",
   "scripts": {
     "dev:api": "pnpm --filter @tulsi/api dev",
-    "dev:web": "pnpm --filter tulsimlm-prototype dev",
+    "dev:web": "pnpm --filter @tulsi/web dev",
     "build": "pnpm -r run build",
     "typecheck": "pnpm -r run typecheck",
     "lint": "pnpm -r run lint",

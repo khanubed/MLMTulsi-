@@ -5,7 +5,7 @@ export const FLAGSHIP_PRODUCT: Product = {
   slug: 'tulsi-meta-ved-herbal-mix',
   name: 'Tulsi Meta Ved Herbal Mix',
   subtitle: 'A thoughtful botanical daily wellness preparation',
-  price: 500,
+  price: 500 ,
   currency: 'INR',
   description: 'Tulsi Meta Ved Herbal Mix is our signature botanical blend rooted in centuries of Indian Ayurvedic reverence. Crafted to integrate harmoniously into your daily morning or evening rituals, this herbal preparation presents natural botanical warmth in an unadulterated form.',
   badge: 'Flagship Formulation',
@@ -43,7 +43,8 @@ export const FLAGSHIP_PRODUCT: Product = {
     }
   ],
   specifications: [
-    { label: 'Selling Price', value: '₹500 (Inclusive of applicable taxes)' },
+    { label: 'Selling Price', value: '₹500 (Flat 50% Launch Discount applied)' },
+    { label: 'Maximum Retail Price (M.R.P.)', value: '₹999 (Inclusive of all taxes)' },
     { label: 'Form', value: 'Fine Herbal Mix Powder' },
     { label: 'Net Weight', value: '100g (Verified bottle packaging)' },
     { label: 'Origin', value: 'Sourced & Made in India' },

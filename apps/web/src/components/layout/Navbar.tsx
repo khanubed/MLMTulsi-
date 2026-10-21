@@ -1,16 +1,25 @@
-import React, { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+'use client';
+
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import { ShoppingBag, User, Menu, X, Leaf, ArrowRight } from "lucide-react";
-import { useCartStore } from "../../store/useCartStore";
-import { useAuthStore } from "../../store/useAuthStore";
+import { useCartStore } from "@/store/useCartStore";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { openDrawer, getTotalItems } = useCartStore();
   const { isAuthenticated, user } = useAuthStore();
-  const navigate = useNavigate();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const totalItems = getTotalItems();
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const totalItems = mounted ? getTotalItems() : 0;
 
   const navLinks = [
     { name: "Home", path: "/" },
@@ -26,7 +35,7 @@ export const Navbar: React.FC = () => {
         <div className="bg-[#183F32] text-[#F8F5ED] text-[11px] sm:text-xs py-1.5 px-3 text-center tracking-wide font-medium flex items-center justify-center gap-1.5">
           <Leaf className="w-3.5 h-3.5 text-[#A9B7A0] shrink-0" />
           <span className="truncate">
-            Flagship: Tulsi Meta Ved Herbal Mix • ₹500 • Free All-India Delivery
+            Flagship: Tulsi Meta Ved Herbal Mix • <span className="line-through font-thin">₹999</span> ₹500 (50% OFF) • Free All-India Delivery
           </span>
         </div>
 
@@ -34,7 +43,7 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Logo */}
             <Link
-              to="/"
+              href="/"
               className="flex items-center shrink-0 py-1 transition-opacity hover:opacity-90"
             >
               <img
@@ -46,28 +55,29 @@ export const Navbar: React.FC = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-8">
-              {navLinks.map((link) => (
-                <NavLink
-                  key={link.path}
-                  to={link.path}
-                  className={({ isActive }) =>
-                    `text-sm font-medium transition-colors hover:text-[#183F32] relative py-1 ${
+              {navLinks.map((link) => {
+                const isActive = pathname === link.path;
+                return (
+                  <Link
+                    key={link.path}
+                    href={link.path}
+                    className={`text-sm font-medium transition-colors hover:text-[#183F32] relative py-1 ${
                       isActive
                         ? "text-[#183F32] font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#183F32]"
                         : "text-[#77796F]"
-                    }`
-                  }
-                >
-                  {link.name}
-                </NavLink>
-              ))}
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* Actions */}
             <div className="flex items-center gap-1 sm:gap-3">
               {/* Account icon */}
               <Link
-                to={isAuthenticated ? "/dashboard" : "/login"}
+                href={isAuthenticated ? "/dashboard" : "/login"}
                 className="min-w-[40px] min-h-[40px] sm:min-w-[44px] sm:min-h-[44px] flex items-center justify-center text-[#252923] hover:text-[#183F32] hover:bg-[#EFE9DB] rounded-xl transition-colors text-sm"
                 title={
                   isAuthenticated
@@ -98,7 +108,7 @@ export const Navbar: React.FC = () => {
 
               {/* Shop Now Primary CTA */}
               <button
-                onClick={() => navigate("/products/tulsi-meta-ved-herbal-mix")}
+                onClick={() => router.push("/products/tulsi-meta-ved-herbal-mix")}
                 className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-[#183F32] text-[#F8F5ED] text-xs font-semibold uppercase tracking-wider rounded-xl hover:bg-[#285642] transition-colors shadow-xs cursor-pointer"
               >
                 Shop Now
@@ -125,27 +135,28 @@ export const Navbar: React.FC = () => {
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-[#E5DFD3] bg-[#F8F5ED] px-4 pt-3 pb-6 space-y-3 shadow-lg">
             <div className="space-y-1">
-              {navLinks.map((link) => (
-                <NavLink
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={({ isActive }) =>
-                    `block px-4 py-3 rounded-xl text-base font-medium ${
+              {navLinks.map((link) => {
+                const isActive = pathname === link.path;
+                return (
+                  <Link
+                    key={link.path}
+                    href={link.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`block px-4 py-3 rounded-xl text-base font-medium ${
                       isActive
                         ? "bg-[#EFE9DB] text-[#183F32] font-semibold"
                         : "text-[#252923] hover:bg-[#EFE9DB]"
-                    }`
-                  }
-                >
-                  {link.name}
-                </NavLink>
-              ))}
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
             </div>
 
             <div className="pt-3 border-t border-[#E5DFD3] space-y-2">
               <Link
-                to={isAuthenticated ? "/dashboard" : "/login"}
+                href={isAuthenticated ? "/dashboard" : "/login"}
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-3 px-4 py-3 rounded-xl text-base text-[#252923] hover:bg-[#EFE9DB]"
               >
@@ -160,11 +171,11 @@ export const Navbar: React.FC = () => {
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  navigate("/products/tulsi-meta-ved-herbal-mix");
+                  router.push("/products/tulsi-meta-ved-herbal-mix");
                 }}
                 className="w-full py-3.5 bg-[#183F32] text-[#F8F5ED] text-sm font-semibold rounded-xl flex items-center justify-center gap-2 shadow-xs cursor-pointer"
               >
-                Shop Tulsi Meta Ved (₹500)
+                Shop Tulsi Meta Ved (₹500 • 50% OFF)
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>

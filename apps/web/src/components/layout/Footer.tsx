@@ -12,7 +12,7 @@ export const Footer: React.FC = () => {
             <div className="flex items-center gap-4 justify-center md:justify-start p-4 rounded-md bg-[#285642]/40 border border-[#285642]">
               <Leaf className="w-8 h-8 text-[#A9B7A0] shrink-0" />
               <div>
-                <h4 className="font-serif text-whtie font-semibold">
+                <h4 className="font-serif text-white font-semibold">
                   Ayurvedic Heritage
                 </h4>
                 <p className="text-xs text-[#A9B7A0] mt-0.5">
@@ -24,7 +24,7 @@ export const Footer: React.FC = () => {
             <div className="flex items-center gap-4 justify-center md:justify-start p-4 rounded-md bg-[#285642]/40 border border-[#285642]">
               <Truck className="w-8 h-8 text-[#A9B7A0] shrink-0" />
               <div>
-                <h4 className="font-serif text-base font-semibold">
+                <h4 className="font-serif text-white font-semibold">
                   All-India Dispatch
                 </h4>
                 <p className="text-xs text-[#A9B7A0] mt-0.5">
@@ -36,7 +36,7 @@ export const Footer: React.FC = () => {
             <div className="flex items-center gap-4 justify-center md:justify-start p-4 rounded-md bg-[#285642]/40 border border-[#285642]">
               <ShieldCheck className="w-8 h-8 text-[#A9B7A0] shrink-0" />
               <div>
-                <h4 className="font-serif text-base font-semibold">
+                <h4 className="font-serif text-white font-semibold">
                   Transparent Standards
                 </h4>
                 <p className="text-xs text-[#A9B7A0] mt-0.5">

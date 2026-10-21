@@ -75,7 +75,7 @@ export const POLICIES_DATA = {
     sections: [
       {
         heading: '1. Prototype Terms',
-        content: 'Tulsi Swaraj is presenting this interactive prototype to demonstrate the online purchase experience of Tulsi Meta Ved Herbal Mix at ₹500.'
+        content: 'Tulsi Swaraj is presenting this interactive prototype to demonstrate the online purchase experience of Tulsi Meta Ved Herbal Mix at a special promotional launch price of ₹500 (50% discount from M.R.P. ₹999).'
       },
       {
         heading: '2. Pricing & Orders',
@@ -85,10 +85,10 @@ export const POLICIES_DATA = {
         heading: '3. Product Wellness Disclaimer',
         content: 'Herbal formulations are intended for traditional wellness ritual support. Statements made have not been evaluated as pharmaceutical medical prescriptions. Consult a licensed physician for specific medical conditions.'
       },
-      {
-        heading: '4. Optional Referral Program Rules',
-        content: 'Any referral incentive preview shown inside private customer dashboards is subject to member terms and verification of qualified orders. Income is not guaranteed and requires meeting program qualification milestones.'
-      }
+      // {
+      //   heading: '4. Optional Referral Program Rules',
+      //   content: 'Any referral incentive preview shown inside private customer dashboards is subject to member terms and verification of qualified orders. Income is not guaranteed and requires meeting program qualification milestones.'
+      // }
     ]
   }
 };
