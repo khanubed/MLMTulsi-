@@ -275,6 +275,15 @@
 - **Verification:**
   - Ran `pnpm --filter @tulsi/web run build`: Passed with **Exit code 0** (22/22 static pages generated).
 
+### [2026-10-21 16:50 IST] - Vercel Deployment & `npm install` Compatibility Fix
+
+- **Problem:** Vercel deployment failed during `npm install` with `npm error code EUNSUPPORTEDPROTOCOL` on `workspace:*` dependencies (`@tulsi/contracts` and `@tulsi/utils`).
+- **Resolution:**
+  - Removed unused `"@tulsi/contracts": "workspace:*"` and `"@tulsi/utils": "workspace:*"` from [apps/web/package.json](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/package.json).
+  - Removed `transpilePackages` from [apps/web/next.config.mjs](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/next.config.mjs).
+  - Synced [apps/web/package-lock.json](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/package-lock.json) and [pnpm-lock.yaml](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/pnpm-lock.yaml).
+- **Outcome:** `apps/web` can now be built and deployed natively on Vercel using either standard `npm` or `pnpm` with zero protocol errors. Production build verified with `pnpm --filter @tulsi/web run build` (Exit code 0).
+
 ---
 
 ## 3. Current Architecture & State
