@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Leaf, ShieldCheck, Truck, Mail, Phone, MapPin } from "lucide-react";
 
 export const Footer: React.FC = () => {
@@ -12,7 +12,7 @@ export const Footer: React.FC = () => {
             <div className="flex items-center gap-4 justify-center md:justify-start p-4 rounded-md bg-[#285642]/40 border border-[#285642]">
               <Leaf className="w-8 h-8 text-[#A9B7A0] shrink-0" />
               <div>
-                <h4 className="font-serif text-base font-semibold">
+                <h4 className="font-serif text-white font-semibold">
                   Ayurvedic Heritage
                 </h4>
                 <p className="text-xs text-[#A9B7A0] mt-0.5">
@@ -24,7 +24,7 @@ export const Footer: React.FC = () => {
             <div className="flex items-center gap-4 justify-center md:justify-start p-4 rounded-md bg-[#285642]/40 border border-[#285642]">
               <Truck className="w-8 h-8 text-[#A9B7A0] shrink-0" />
               <div>
-                <h4 className="font-serif text-base font-semibold">
+                <h4 className="font-serif text-white font-semibold">
                   All-India Dispatch
                 </h4>
                 <p className="text-xs text-[#A9B7A0] mt-0.5">
@@ -36,7 +36,7 @@ export const Footer: React.FC = () => {
             <div className="flex items-center gap-4 justify-center md:justify-start p-4 rounded-md bg-[#285642]/40 border border-[#285642]">
               <ShieldCheck className="w-8 h-8 text-[#A9B7A0] shrink-0" />
               <div>
-                <h4 className="font-serif text-base font-semibold">
+                <h4 className="font-serif text-white font-semibold">
                   Transparent Standards
                 </h4>
                 <p className="text-xs text-[#A9B7A0] mt-0.5">
@@ -89,13 +89,13 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2.5 text-sm text-[#F8F5ED]/80">
               <li>
-                <Link to="/" className="hover:text-white transition-colors">
+                <Link href="/" className="hover:text-white transition-colors">
                   Home
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/about"
+                  href="/about"
                   className="hover:text-white transition-colors"
                 >
                   Our Story & Philosophy
@@ -103,20 +103,20 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <Link
-                  to="/products/tulsi-meta-ved-herbal-mix"
+                  href="/products/tulsi-meta-ved-herbal-mix"
                   className="hover:text-white transition-colors"
                 >
-                  Tulsi Meta Ved Mix ( <span className="font-medium line-through">₹1000</span> ₹500)
+                  Tulsi Meta Ved Mix (<span className="font-medium line-through">₹999</span> ₹500 • 50% OFF)
                 </Link>
               </li>
               <li>
-                <Link to="/cart" className="hover:text-white transition-colors">
+                <Link href="/cart" className="hover:text-white transition-colors">
                   Shopping Cart
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/checkout"
+                  href="/checkout"
                   className="hover:text-white transition-colors"
                 >
                   Checkout
@@ -133,7 +133,7 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2.5 text-sm text-[#F8F5ED]/80">
               <li>
                 <Link
-                  to="/dashboard"
+                  href="/dashboard"
                   className="hover:text-white transition-colors"
                 >
                   Account Portal
@@ -141,7 +141,7 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <Link
-                  to="/dashboard/orders"
+                  href="/dashboard/orders"
                   className="hover:text-white transition-colors"
                 >
                   Order Tracking
@@ -149,7 +149,7 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <Link
-                  to="/dashboard/support"
+                  href="/dashboard/support"
                   className="hover:text-white transition-colors"
                 >
                   Help & Inquiries
@@ -157,7 +157,7 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <Link
-                  to="/contact"
+                  href="/contact"
                   className="hover:text-white transition-colors"
                 >
                   Contact Us
@@ -165,7 +165,7 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <Link
-                  to="/login"
+                  href="/login"
                   className="hover:text-white transition-colors"
                 >
                   Member Sign In
@@ -182,7 +182,7 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2.5 text-sm text-[#F8F5ED]/80">
               <li>
                 <Link
-                  to="/shipping-policy"
+                  href="/shipping-policy"
                   className="hover:text-white transition-colors"
                 >
                   Shipping Policy
@@ -190,7 +190,7 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <Link
-                  to="/returns-refunds"
+                  href="/returns-refunds"
                   className="hover:text-white transition-colors"
                 >
                   Returns & Refunds
@@ -198,7 +198,7 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <Link
-                  to="/privacy-policy"
+                  href="/privacy-policy"
                   className="hover:text-white transition-colors"
                 >
                   Privacy Policy
@@ -206,7 +206,7 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <Link
-                  to="/terms"
+                  href="/terms"
                   className="hover:text-white transition-colors"
                 >
                   Terms of Service
@@ -220,7 +220,7 @@ export const Footer: React.FC = () => {
         <div className="mt-12 pt-8 border-t border-[#285642] flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[#A9B7A0]">
           <p>© 2026 Tulsi Swaraj. All rights reserved. Made in India.</p>
           <p className="bg-[#285642] px-3 py-1.5 rounded-full text-[11px] text-[#F8F5ED]/90">
-            Frontend Prototype • Flagship Selling Price: ₹500 • Simulated
+            Frontend Prototype • Flagship Selling Price: <span className="line-through font-thin">₹999</span> ₹500 (50% OFF from ₹999) • Simulated
             Commerce Workflow
           </p>
         </div>

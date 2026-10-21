@@ -1,5 +1,8 @@
+'use client';
+
 import React from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Package,
@@ -10,18 +13,27 @@ import {
   ChevronRight,
   Leaf,
 } from "lucide-react";
-import { useAuthStore } from "../../store/useAuthStore";
+import { useAuthStore } from "@/store/useAuthStore";
 
-export const DashboardLayout: React.FC = () => {
+export const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout } = useAuthStore();
-  const navigate = useNavigate();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    router.push("/");
   };
 
-  const navItems = [
+  interface NavItem {
+    label: string;
+    path: string;
+    icon: React.ComponentType<{ className?: string }>;
+    exact?: boolean;
+    isReferral?: boolean;
+  }
+
+  const navItems: NavItem[] = [
     {
       label: "Overview",
       path: "/dashboard",
@@ -31,12 +43,12 @@ export const DashboardLayout: React.FC = () => {
     { label: "My Orders", path: "/dashboard/orders", icon: Package },
     { label: "Profile Details", path: "/dashboard/profile", icon: User },
     { label: "Support Desk", path: "/dashboard/support", icon: LifeBuoy },
-    {
-      label: "Referral Demo",
-      path: "/dashboard/referrals",
-      icon: Gift,
-      isReferral: true,
-    },
+    // {
+    //   label: "Referral Demo",
+    //   path: "/dashboard/referrals",
+    //   icon: Gift,
+    //   isReferral: true,
+    // },
   ];
 
   return (
@@ -49,7 +61,7 @@ export const DashboardLayout: React.FC = () => {
               <Leaf className="w-3.5 h-3.5 text-[#A9B7A0]" />
               Tulsi Swaraj Customer Portal
             </span>
-            <h1 className="text-xl sm:text-3xl font-serif font-bold">
+            <h1 className="text-xl sm:text-3xl text-white font-serif font-bold">
               Namaste, {user?.fullName || "Valued Member"}
             </h1>
             <p className="text-[11px] sm:text-xs text-[#A9B7A0]">
@@ -71,22 +83,20 @@ export const DashboardLayout: React.FC = () => {
         <div className="lg:hidden mb-6 overflow-x-auto no-scrollbar -mx-4 px-4 flex gap-2">
           {navItems.map((item) => {
             const Icon = item.icon;
+            const isActive = item.exact ? pathname === item.path : pathname.startsWith(item.path);
             return (
-              <NavLink
+              <Link
                 key={item.path}
-                to={item.path}
-                end={item.exact}
-                className={({ isActive }) =>
-                  `flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap shrink-0 transition-all ${
-                    isActive
-                      ? "bg-[#183F32] text-[#F8F5ED] shadow-xs"
-                      : "bg-white text-[#252923] border border-[#E5DFD3] hover:bg-[#EFE9DB]"
-                  } ${item.isReferral ? "border-[#B49A63]" : ""}`
-                }
+                href={item.path}
+                className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap shrink-0 transition-all ${
+                  isActive
+                    ? "bg-[#183F32] text-[#F8F5ED] shadow-xs"
+                    : "bg-white text-[#252923] border border-[#E5DFD3] hover:bg-[#EFE9DB]"
+                } ${item.isReferral ? "border-[#B49A63]" : ""}`}
               >
                 <Icon className="w-3.5 h-3.5" />
                 <span>{item.label}</span>
-              </NavLink>
+              </Link>
             );
           })}
         </div>
@@ -97,33 +107,31 @@ export const DashboardLayout: React.FC = () => {
             <nav className="space-y-1">
               {navItems.map((item) => {
                 const Icon = item.icon;
+                const isActive = item.exact ? pathname === item.path : pathname.startsWith(item.path);
                 return (
-                  <NavLink
+                  <Link
                     key={item.path}
-                    to={item.path}
-                    end={item.exact}
-                    className={({ isActive }) =>
-                      `flex items-center justify-between px-4 py-3 rounded-xl text-xs font-semibold transition-all ${
-                        isActive
-                          ? "bg-[#183F32] text-[#F8F5ED] shadow-xs"
-                          : "text-[#252923] hover:bg-[#EFE9DB] hover:text-[#183F32]"
-                      } ${item.isReferral ? "border border-[#B49A63]/40" : ""}`
-                    }
+                    href={item.path}
+                    className={`flex items-center justify-between px-4 py-3 rounded-xl text-xs font-semibold transition-all ${
+                      isActive
+                        ? "bg-[#183F32] text-[#F8F5ED] shadow-xs"
+                        : "text-[#252923] hover:bg-[#EFE9DB] hover:text-[#183F32]"
+                    } ${item.isReferral ? "border border-[#B49A63]/40" : ""}`}
                   >
                     <div className="flex items-center gap-3">
                       <Icon className="w-4 h-4" />
                       <span>{item.label}</span>
                     </div>
                     <ChevronRight className="w-3.5 h-3.5 opacity-60" />
-                  </NavLink>
+                  </Link>
                 );
               })}
             </nav>
           </aside>
 
-          {/* Main Sub-view Outlet */}
+          {/* Main Sub-view */}
           <main className="lg:col-span-9 bg-white rounded-2xl sm:rounded-3xl border border-[#E5DFD3] p-4 sm:p-8 shadow-xs min-h-[450px]">
-            <Outlet />
+            {children}
           </main>
         </div>
       </div>

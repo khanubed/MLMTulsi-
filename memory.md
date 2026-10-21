@@ -10,7 +10,7 @@
 - **Primary Product:** Tulsi Meta Ved Herbal Mix (Initial display ₹500 = 50,000 paise)
 - **Architecture Strategy:** Modular Monolith in a pnpm workspace
 - **Backend Stack:** Node.js, Express.js (ESM), TypeScript, Prisma ORM, PostgreSQL
-- **Frontend Stack:** React 19, Vite 8, TailwindCSS v4, TypeScript, Zustand, React Router v7
+- **Frontend Stack:** Next.js 16 (App Router), React 19, TailwindCSS v4, TypeScript, Zustand, Zod, React Hook Form, Lenis, GSAP ScrollTrigger
 - **Payment Gateway:** PhonePe Payment Gateway (Server-to-server callbacks, authoritative status reconciliation)
 - **Documentation:**
   - [prd.md](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/docs/prd.md)
@@ -226,6 +226,55 @@
   - Added dedicated mobile separation (`mt-12 sm:mt-6`) between the top narrative and the bottom trust/action block.
 - **Outcome:** Clean visual breathing room in the middle on mobile, leaving the background product video unobstructed while preserving tight cohesive flow on desktop.
 
+### [2026-10-17 17:30 IST] - Complete Migration to Next.js 16 App Router (SSG, SEO & Monorepo Integration)
+
+- **Action:** Migrated storefront (`apps/web`) from legacy Vite React SPA to **Next.js 16 (`^16.4.2`)** with App Router, React 19, Zod (`^3.24.2`), and React Hook Form (`^7.54.2`).
+- **Tooling & Monorepo Updates:**
+  - Renamed package in [apps/web/package.json](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/package.json) to `@tulsi/web`.
+  - Added dependencies: `next@^16.4.2`, `react-hook-form@^7.54.2`, `@hookform/resolvers@^3.10.0`, `zod@^3.24.2`, `@tailwindcss/postcss@^4.0.0`, `postcss@^8.4.38`, and workspace links to `@tulsi/contracts` and `@tulsi/utils`.
+  - Configured [apps/web/next.config.mjs](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/next.config.mjs) with `transpilePackages: ['@tulsi/contracts', '@tulsi/utils']`.
+  - Configured [apps/web/postcss.config.mjs](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/postcss.config.mjs) with `@tailwindcss/postcss`.
+  - Updated root [package.json](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/package.json) scripts: `"dev:web": "pnpm --filter @tulsi/web dev"`.
+- **App Router Architecture (`apps/web/src/app/`):**
+  - [app/layout.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/layout.tsx): Root layout with `next/font/google` (Manrope + DM Sans), `Organization` JSON-LD schema, metadata defaults, `Navbar`, `CartDrawer`, `Footer`, and `SmoothScrollProvider` (Lenis).
+  - [app/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/page.tsx): SSG Home page with `FAQPage` JSON-LD schema rendering [HomePageClient.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/HomePageClient.tsx).
+  - [app/products/[slug]/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/products/[slug]/page.tsx): SSG product details via `generateStaticParams()`, `generateMetadata()`, and Google Merchant compliant `Product` JSON-LD schema, rendering [ProductDetailClient.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/product/ProductDetailClient.tsx).
+  - **Static Editorial & Legal Pages (100% SSG):** [app/about/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/about/page.tsx), [app/shipping-policy/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/shipping-policy/page.tsx), [app/returns-refunds/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/returns-refunds/page.tsx), [app/privacy-policy/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/privacy-policy/page.tsx), [app/terms/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/terms/page.tsx).
+  - [app/contact/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/contact/page.tsx) & [app/contact/ContactFormClient.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/contact/ContactFormClient.tsx): Static layout with interactive React Hook Form + Zod island.
+  - [app/cart/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/cart/page.tsx): Client-side cart with SSR hydration-safe mounted guard.
+  - [app/checkout/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/checkout/page.tsx): Full multi-step checkout powered by `react-hook-form` + `zod` (`@tulsi/contracts` shippingAddressSchema validation).
+  - [app/order-confirmation/[orderId]/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/order-confirmation/[orderId]/page.tsx): Dynamic order confirmation receipt with celebratory `canvas-confetti`.
+  - [app/login/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/login/page.tsx), [app/register/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/register/page.tsx), [app/forgot-password/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/forgot-password/page.tsx): Auth suite with RHF + Zod form validation.
+  - [app/dashboard/](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/dashboard): Full customer dashboard with App Router layout, orders list, order detail view, profile editor (RHF + Zod), support ticket submission (RHF + Zod), and referral earnings tracker.
+  - [app/sitemap.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/sitemap.ts) & [app/robots.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/robots.ts): Dynamic metadata routes for Google crawler directives and XML sitemaps.
+  - [app/not-found.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/not-found.tsx): Custom branded 404 page.
+- **Component Adaptations:**
+  - Converted [Navbar.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/layout/Navbar.tsx), [Footer.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/layout/Footer.tsx), [CartDrawer.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/cart/CartDrawer.tsx), [DashboardLayout.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/dashboard/DashboardLayout.tsx), and [HomePurchasePopup.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/HomePurchasePopup.tsx) from `react-router-dom` to `next/link` and `next/navigation`.
+  - Guarded GSAP ScrollTrigger plugin registration in [ProductAssembleSection.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/ProductAssembleSection.tsx) with `typeof window !== 'undefined'`.
+  - Created [SmoothScrollProvider.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/providers/SmoothScrollProvider.tsx) initializing Lenis with GSAP ticker sync.
+- **Legacy Vite Cleanup:**
+  - Removed `src/pages/`, `vite.config.ts`, `index.html`, `src/main.tsx`, `src/App.tsx`, `src/App.css`, `src/index.css`.
+- **Verification & Build:**
+  - Production build `pnpm --filter @tulsi/web run build` completed with **Exit code 0** (22/22 static pages generated).
+  - Dev server tested and verified with zero errors on `http://localhost:3000` via Turbopack.
+### [2026-10-21 15:52 IST] - 50% Promotional Discount Display (M.R.P. ₹999 -> ₹500) & TypeScript Hardening
+
+- **Action:** Updated all storefront price representations where ₹500 is used to explicitly present a 50% promotional launch discount from M.R.P. ₹999 down to ₹500 (50,000 paise).
+- **Files Modified:**
+  - [HomePageClient.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/HomePageClient.tsx): Hero eyebrow badge, hero trust marker, product card image badge, product pricing box (MRP strikethrough, 50% OFF badge, ₹499 savings), buy buttons, fair pricing highlight, ritual CTA, and closing banner.
+  - [HomePurchasePopup.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/HomePurchasePopup.tsx): Modal price header with ₹999 strikethrough, 50% OFF badge, and "Buy Now — ₹500 (50% OFF)" CTA.
+  - [Navbar.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/layout/Navbar.tsx): Announcement bar (`₹999 ₹500 (50% OFF)`) and mobile drawer CTA.
+  - [Footer.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/layout/Footer.tsx): Quick links and prototype disclaimer badge (`₹999 ₹500 (50% OFF from ₹999)`).
+  - [CartDrawer.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/layout/CartDrawer.tsx): Item unit price with MRP strikethrough & 50% OFF pill, plus subtotal promotional savings row.
+  - [cart/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/cart/page.tsx): Empty cart button, item unit price badges, and order summary breakdown showing Total M.R.P. & Promotional Discount (-₹499 per unit).
+  - [checkout/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/checkout/page.tsx): Itemized order review with MRP strikethrough & 50% OFF badge, plus order calculation breakdown.
+  - [productData.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/data/productData.ts): Specification table updated with Flat 50% Launch Discount and M.R.P. ₹999.
+  - [faqData.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/data/faqData.ts) & [policiesData.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/data/policiesData.ts): Price FAQ and terms descriptions updated.
+  - [about/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/about/page.tsx), [dashboard/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/dashboard/page.tsx), [dashboard/referrals/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/dashboard/referrals/page.tsx): Consistent discount notation across portal.
+  - [DashboardLayout.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/dashboard/DashboardLayout.tsx): Defined `NavItem` interface with optional `isReferral` property to fix TypeScript compilation error.
+- **Verification:**
+  - Ran `pnpm --filter @tulsi/web run build`: Passed with **Exit code 0** (22/22 static pages generated).
+
 ---
 
 ## 3. Current Architecture & State
@@ -238,7 +287,12 @@ TulsiMLM/
 ├── memory.md                  # This persistent context tracking file
 ├── apps/
 │   ├── api/                   # Express backend API (Port 4000)
-│   └── web/                   # Vite + React storefront prototype (Port 3000 / 5173)
+│   └── web/                   # Next.js 16 App Router storefront (@tulsi/web, Port 3000)
+│       └── src/
+│           ├── app/           # App Router pages, layouts, metadata & JSON-LD schemas
+│           ├── components/    # Reusable UI & client islands (home, product, cart, dashboard)
+│           ├── data/          # Flagship product data, FAQs, policies
+│           └── store/         # Zustand stores (useCartStore, useAuthStore)
 ├── packages/
 │   ├── contracts/             # Zod contracts & DTOs
 │   ├── config/                # Shared configs
@@ -253,12 +307,11 @@ TulsiMLM/
 
 ## 4. Next Implementation Steps
 
-1. **Frontend Prototype Alignment:**
-   - Link `@tulsi/contracts` and `@tulsi/utils` to `apps/web` for shared types/schemas.
-   - Audit `apps/web/src/store/useCartStore.ts` and `apps/web/src/pages/CheckoutPage.tsx`.
-2. **API Client & Environment Integration:**
-   - Establish an API client (`api-client.ts`) in `apps/web/src/lib` pointing to `apps/api` (`http://localhost:4000/api/v1`).
-3. **Product Catalogue Connection:**
-   - Connect `HomePage.tsx` and `ProductDetailPage.tsx` to `GET /api/v1/products` instead of static `productData.ts`.
-4. **Checkout & PhonePe Integration:**
-   - Wire `CheckoutPage.tsx` form submission to backend `POST /api/v1/checkout` and handle PhonePe payment redirection and return.
+1. **Backend API Integration (`apps/api` connection):**
+   - Create unified API client (`apps/web/src/lib/api-client.ts`) pointing to `apps/api` (`http://localhost:4000/api/v1`).
+2. **Product Catalogue Connection:**
+   - Connect Next.js product page and dynamic params to `GET /api/v1/products` while preserving static fallback / revalidation.
+3. **Checkout & PhonePe Integration:**
+   - Wire checkout form submission (`apps/web/src/app/checkout/page.tsx`) to `POST /api/v1/checkout` with backend authoritative pricing.
+   - Connect PhonePe redirect flow and return verification.
+

@@ -30,7 +30,7 @@ export const FAQS: FAQItem[] = [
     id: 'faq-4',
     category: 'order',
     question: 'What is the price?',
-    answer: 'Tulsi Meta Ved Herbal Mix is offered at an introductory single-unit price of ₹500, inclusive of all applicable domestic taxes.'
+    answer: 'Tulsi Meta Ved Herbal Mix is currently offered at a special introductory launch price of ₹500 (flat 50% discount from M.R.P. ₹999), inclusive of all applicable domestic taxes and free pan-India delivery.'
   },
   {
     id: 'faq-5',

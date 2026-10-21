@@ -1,17 +1,24 @@
+'use client';
+
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { X, ArrowRight, ShoppingBag, Leaf } from "lucide-react";
-import { FLAGSHIP_PRODUCT } from "../../data/productData";
-import { useCartStore } from "../../store/useCartStore";
+import { FLAGSHIP_PRODUCT } from "@/data/productData";
+import { useCartStore } from "@/store/useCartStore";
 
 export const HomePurchasePopup: React.FC = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const { addItem, closeDrawer, isDrawerOpen, items } = useCartStore();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const primaryButtonRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     // 1. Check if already dismissed or checkout initiated in current session
@@ -103,14 +110,14 @@ export const HomePurchasePopup: React.FC = () => {
 
       // 4. Close popup and navigate to checkout
       setIsOpen(false);
-      navigate("/checkout");
+      router.push("/checkout");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // If closed or cart drawer is open, do not render
-  if (!isOpen || isDrawerOpen) return null;
+  // If not mounted or closed or cart drawer is open, do not render
+  if (!mounted || !isOpen || isDrawerOpen) return null;
 
   const productImg = FLAGSHIP_PRODUCT.images[0];
 
@@ -177,12 +184,16 @@ export const HomePurchasePopup: React.FC = () => {
               Discover Tulsi Swaraj’s herbal blend.
             </p>
 
-            <div className="mt-2 flex items-baseline gap-2">
+            <div className="mt-2 flex items-baseline gap-2 flex-wrap">
               <span className="text-xl sm:text-2xl font-bold text-[#183F32] font-['Manrope']">
                 ₹{FLAGSHIP_PRODUCT.price}
               </span>
-              <span className="text-[11px] text-[#285642] font-medium bg-[#A9B7A0]/20 px-2 py-0.5 rounded">
-                Pan-India Free Dispatch
+              <span className="line-through text-xs text-[#77796F] font-medium">₹999</span>
+              <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
+                50% OFF
+              </span>
+              <span className="text-[11px] text-[#285642] font-medium bg-[#A9B7A0]/20 px-2 py-0.5 rounded ml-auto">
+                Free Dispatch
               </span>
             </div>
           </div>
@@ -198,7 +209,7 @@ export const HomePurchasePopup: React.FC = () => {
             className="w-full py-3.5 px-5 rounded-xl bg-[#183F32] text-[#F8F5ED] text-sm font-semibold hover:bg-[#285642] focus:outline-none focus:ring-2 focus:ring-[#B49A63] focus:ring-offset-2 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
           >
             <ShoppingBag className="w-4 h-4" />
-            <span>Buy Now — ₹{FLAGSHIP_PRODUCT.price}</span>
+            <span>Buy Now — ₹{FLAGSHIP_PRODUCT.price} (50% OFF)</span>
             <ArrowRight className="w-4 h-4 ml-0.5" />
           </button>
 

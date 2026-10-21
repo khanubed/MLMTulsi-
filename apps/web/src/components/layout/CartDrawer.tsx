@@ -1,10 +1,13 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+'use client';
+
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { X, Trash2, Plus, Minus, ArrowRight, ShoppingBag } from "lucide-react";
-import { useCartStore } from "../../store/useCartStore";
+import { useCartStore } from "@/store/useCartStore";
 
 export const CartDrawer: React.FC = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const {
     items,
     isDrawerOpen,
@@ -15,18 +18,22 @@ export const CartDrawer: React.FC = () => {
     getTotalItems,
   } = useCartStore();
 
-  if (!isDrawerOpen) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || !isDrawerOpen) return null;
 
   const subtotal = getSubtotal();
 
   const handleCheckout = () => {
     closeDrawer();
-    navigate("/checkout");
+    router.push("/checkout");
   };
 
   const handleViewCart = () => {
     closeDrawer();
-    navigate("/cart");
+    router.push("/cart");
   };
 
   return (
@@ -80,7 +87,7 @@ export const CartDrawer: React.FC = () => {
                 <button
                   onClick={() => {
                     closeDrawer();
-                    navigate("/products/tulsi-meta-ved-herbal-mix");
+                    router.push("/products/tulsi-meta-ved-herbal-mix");
                   }}
                   className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#183F32] text-[#F8F5ED] rounded-sm text-sm font-medium hover:bg-[#285642] transition-colors"
                 >
@@ -116,9 +123,14 @@ export const CartDrawer: React.FC = () => {
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
-                      <p className="text-xs text-[#77796F] mt-0.5">
-                        Unit Price: ₹{item.product.price}
-                      </p>
+                      <div className="flex items-center gap-1.5 text-xs text-[#77796F] mt-0.5 flex-wrap">
+                        <span>Unit:</span>
+                        <span className="line-through text-[#77796F]/80 text-[11px]">₹999</span>
+                        <span className="font-bold text-[#183F32]">₹{item.product.price}</span>
+                        <span className="text-[10px] text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded border border-emerald-200 font-semibold">
+                          50% OFF
+                        </span>
+                      </div>
                       <div className="flex items-center justify-between mt-3">
                         <div className="flex items-center border border-[#A9B7A0] rounded bg-white overflow-hidden">
                           <button
@@ -163,12 +175,16 @@ export const CartDrawer: React.FC = () => {
                   Complimentary (₹0)
                 </span>
               </div>
+              <div className="flex justify-between text-xs text-emerald-700 font-medium">
+                <span>Launch Savings (50%)</span>
+                <span className="tabular-nums">-₹{499 * items.reduce((acc, i) => acc + i.quantity, 0)}</span>
+              </div>
               <div className="flex justify-between text-base font-semibold text-[#183F32] pt-2 border-t border-[#E5DFD3]">
                 <span>Subtotal</span>
                 <span className="tabular-nums">₹{subtotal}</span>
               </div>
               <p className="text-xs text-[#77796F]">
-                Inclusive of all taxes. Fast simulated dispatch across India.
+                Inclusive of all taxes. 50% launch discount applied.
               </p>
               <div className="pt-2 grid grid-cols-2 gap-2">
                 <button
