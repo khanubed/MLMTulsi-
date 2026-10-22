@@ -101,9 +101,7 @@ export const HomePageClient: React.FC = () => {
                     ₹999
                   </span>
                   <span>₹500</span>
-                  <span className="bg-[#B49A63]/30 text-[#F8F5ED] text-[10px] px-1.5 py-0.5 rounded font-medium border border-[#B49A63]/50">
-                    50% OFF
-                  </span>
+              
                 </span>
               </div>
 
@@ -162,7 +160,7 @@ export const HomePageClient: React.FC = () => {
                   <p className="font-serif text-base sm:text-lg font-bold text-[#F8F5ED] flex items-baseline gap-1.5 flex-wrap">
                     <span className="line-through font-extralight text-xs opacity-75">₹999</span>
                     <span>₹500</span>
-                    <span className="text-[10px] text-emerald-300 font-sans font-semibold bg-emerald-950/60 border border-emerald-500/30 px-1 py-0.5 rounded">50% OFF</span>
+                    {/* <span className="text-[10px] text-emerald-300 font-sans font-semibold bg-emerald-950/60 border border-emerald-500/30 px-1 py-0.5 rounded">50% OFF</span> */}
                   </p>
                   <p className="text-[11px] sm:text-xs text-[#A9B7A0] leading-tight mt-0.5">
                     Launch Price (50% Off)

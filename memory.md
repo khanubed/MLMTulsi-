@@ -284,6 +284,155 @@
   - Synced [apps/web/package-lock.json](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/package-lock.json) and [pnpm-lock.yaml](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/pnpm-lock.yaml).
 - **Outcome:** `apps/web` can now be built and deployed natively on Vercel using either standard `npm` or `pnpm` with zero protocol errors. Production build verified with `pnpm --filter @tulsi/web run build` (Exit code 0).
 
+### [2026-10-21 17:53 IST] - Radial Ingredients Update: Replaced Shilajit & Awla with Cumin & Fenugreek
+
+- **Action:** Replaced the animated radial ingredients in [ProductAssembleSection.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/ProductAssembleSection.tsx):
+  - Replaced **Wild Amla** (`AWLA.png`) with **Fenugreek** (`/images/INGREDIENTS/fenugreek.png`) in the Upper-Left coordinate position (`fenugreekRef`).
+  - Replaced **Himalayan Shilajit** (`SHILAJIT.png`) with **Cumin** (`/images/INGREDIENTS/cumin.png`) in the Lower-Right coordinate position (`cuminRef`).
+  - Updated `BreakpointConfig` coordinates, `RESPONSIVE_LAYOUTS` for desktop, tablet, and mobile, `useGSAP` animation timelines (assembly hold, transition, and ingredient bloom), and JSX pill badges.
+- **Verification:**
+  - Ran `pnpm --filter @tulsi/web run build`: Passed with **Exit code 0** (22/22 static pages generated).
+
+### [2026-10-21 18:08 IST] - Enhanced Assembly Animation: Ingredients Drop Into Bottle Neck Before Cap Closes
+
+- **Action:** Re-engineered Scene 1 timeline in [ProductAssembleSection.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/ProductAssembleSection.tsx):
+  - **Ingredients Drop-In Effect (Section 1):** Before the cap closes, all 5 authentic botanicals (Holy Tulsi, Golden Fenugreek, Vedic Herbs, Native Lahsun, Pure Cumin) cascade down sequentially from high above (`dropStartY`) right into the open neck of the bottle (`dropEndY`), funneling in and disappearing inside the jar body (`scale: 0`, `opacity: 0`).
+  - **Airtight Cap Sealing (Section 1):** Once all 5 botanicals have entered the jar, the cap immediately descends from its tilted angle (`capInitialRotation`) to straighten and lock seamlessly over the neck opening (`y: 0, rotation: 0`), accompanied by the contact shadow intensification and appreciation hold.
+  - **Preserved Radial Pop-Out Bloom (Section 2):** When scrolling into Section 2 (Ingredient Showcase), the 5 botanicals dynamically pop out from inside the bottle and bloom into their full circular 5-pillar sacred formation with animated `.ingredient-label` pills.
+- **Verification:**
+  - Production build `pnpm --filter @tulsi/web run build` passed with **Exit code 0** (22/22 static pages generated).
+
+### [2026-10-21 18:40 IST] - Editorial Botanical Redesign & Enhancement of ProductAssembleSection
+
+- **Component Modified:** [ProductAssembleSection.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/ProductAssembleSection.tsx)
+- **Visual Design & Architectural Enhancements:**
+  1. **Section 1 (Bottle Assembly Experience):**
+     - Restored & styled editorial header: Eyebrow `THE BOTANICAL FORMULA`, Headline `The Art of Herbal Wellness.`, and non-medicinal supporting copy.
+     - Brand Header Bar: `TULSI SWAROJGAR • 01 / THE FORMULA | AYURVEDIC WELLNESS`.
+     - Atmospheric Layers: Subtle oversized `TULSI SWAROJGAR` typography watermark (`text-[#183F32]/[0.035]`), fine concentric guide circles with cardinal ticks behind the bottle, delicate corner botanical line art, and brass accent coordinates.
+     - Scroll guidance: Replaced with `DISCOVER THE FORMULA` and a subtle downward indicator.
+     - Clearance: Adjusted top paddings (`pt-28 sm:pt-32`) and bottle initial offset (`bottleStartY: 45`) to provide complete visual clearance below the fixed navbar and ensure zero collision with the headline.
+  2. **Section 2 (Editorial Botanical Ingredient Showcase):**
+     - Radial Arrangement: Preserved all 5 sacred botanicals (`Holy Tulsi`, `Fenugreek`, `Vedic Herbs`, `Native Lahsun`, `Cumin`) in balanced radial symmetry.
+     - Editorial Annotation Flanks (Desktop):
+       - Left Flank: `01 / BOTANICAL` (Holy Tulsi), `02 / BOTANICAL` (Fenugreek), `04 / BOTANICAL` (Native Lahsun) with botanical Latin subtitles and neutral traditional copy.
+       - Right Flank: `03 / BOTANICAL` (Vedic Herbs), `05 / BOTANICAL` (Cumin), and the Product Identity Panel (`TULSI SWAROJGAR`, `TULSI META VED`, `HERBAL MIX`, link to `/products/tulsi-meta-ved-herbal-mix`).
+     - Connecting Lines: Rendered delicate SVG guide lines with brass endpoint anchors connecting annotation anchors directly to ingredient thumbnails.
+     - Section 2 Header Metadata: `02 / SACRED BOTANICALS`, `The Five-Fold Botanical Harmony`.
+     - Mobile/Tablet Layout: Streamlined layout prioritizing bottle hero and clear thumbnails, with compact pills and bottom identity card, preventing any horizontal overflow or overlap.
+  3. **GSAP Timelines Integration:**
+     - Connected Section 2 annotations, connecting lines, section metadata, and product identity panel directly to `ingredientTimeline` (Timeline 3) for synchronized scrub with Lenis.
+     - Preserved early return for `prefers-reduced-motion: reduce`.
+- **Verification:**
+  - `pnpm --filter @tulsi/web run build` completed with **Exit code 0** (22 static pages generated).
+  - Browser verification confirmed bottle assembly, drop-in sequence, radial bloom, connecting lines, annotations, and product identity panel.
+
+### [2026-10-21 19:05 IST] - Desktop Symmetrical Layout & Alignment Fix for Section 2
+
+- **Component Modified:** [ProductAssembleSection.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/ProductAssembleSection.tsx)
+- **Desktop Symmetrical Layout Fix:**
+  - **Symmetric Centering:** Converted Section 2 (`#section-ingredient-showcase`) into a true vertically centered container (`relative w-full h-[100svh] min-h-[100svh] flex items-center justify-center select-none overflow-hidden`).
+  - **Balanced Flanks Container:** Replaced hardcoded transforms with a responsive grid/flex container (`relative w-full max-w-[1440px] mx-auto px-8 lg:px-12 xl:px-16 flex items-center justify-between pointer-events-none z-15 hidden lg:flex`).
+  - **Left-Flank Alignment:** Grouped cards `01 / BOTANICAL` (Holy Tulsi), `02 / BOTANICAL` (Fenugreek), and `04 / BOTANICAL` (Native Lahsun) in a vertical stack aligned directly to the left with responsive padding (`px-8 lg:px-12 xl:px-16`).
+  - **Right-Flank Alignment:** Grouped cards `03 / BOTANICAL` (Vedic Herbs), `05 / BOTANICAL` (Cumin), and the desktop Product Identity signature card (`TULSI META VED`) in an identical vertical stack aligned directly to the right with responsive padding.
+  - **Central Visual Spacer:** Added `w-[440px] xl:w-[500px]` spacer reserving the exact footprint of the central bottle and 5 radial botanicals.
+  - **Initial Opacity Guards:** Added initial `opacity-0` to `.sec2-metadata`, `.ingredient-annotation`, `.connecting-line`, and `.product-identity-panel` to ensure clean transitions via GSAP ScrollTrigger timeline without flash of unstyled content.
+- **Verification:**
+  - Next.js 16 build (`pnpm --filter @tulsi/web run build`) passed with **Exit code 0** (22/22 static pages generated).
+
+### [2026-10-21 20:12 IST] - Business Owner Commission & Hierarchy Rules Specification
+
+- **File Modified:** [backend.md](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/backend.md)
+- **Confirmed Business Decisions Incorporated:**
+  1. **Level Completion Required for Withdrawal:** Total commission for a level can only be withdrawn once that entire level is 100% completed/filled (single commissions cannot be withdrawn piecemeal).
+  2. **Relative Upline Calculation:** Levels are calculated relative to each purchasing node's upline (immediate parent = Level 1, up to Level 10 ancestor), not fixed to a global root.
+  3. **Strict 10-Level Earning Cap:** All nodes (including the root node) earn commissions solely up to 10 descendant levels below them.
+  4. **Qualifying Sale Definition:** Only orders with confirmed, completed payment via PhonePe qualify. The platform enforces a strict No Refund, No Return, and No COD policy; transactions are final upon settlement.
+  5. **Reward Hold & Admin Approval Workflow:** Calculated commissions enter a `HELD` state. Once reviewed and confirmed by an Administrator, funds credit the user's master wallet balance. Payouts from wallet remain gated until the level is fully complete.
+  6. **Multi-ID & Self-Referrals:** Users can hold up to 100 network IDs and are explicitly permitted to perform self-referrals using their own network IDs. Each ID maintains its own tree position while withdrawable earnings consolidate into the user account.
+  7. **Core Rules Updated:** Restored and formalized Rule 6 (10-level cap) and Rule 11 (No Refund / No Return / No COD finality). Updated Section 5.14 (`commissions`) and Section 5.16 (`withdrawals`) specifications.
+
+
+
+### [2026-10-22 16:38 IST] - ProductAssembleSection Atmospheric Herbal Background Image Integration
+
+- **Component Modified:** [ProductAssembleSection.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/ProductAssembleSection.tsx)
+- **Action & Visual Integration:**
+  - Added [assemble-section-bg.png](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/public/images/assemble-section-bg.png) as an atmospheric, low-opacity background image across the entire two-scene bottle assembly and radial ingredients experience.
+  - Placed the image inside a sticky viewport container (`sticky top-0 h-[100svh] w-full`) within the component's master container (`absolute inset-0 pointer-events-none z-0`) so it stays framed across both Scene 1 (Assembly Stage) and Scene 2 (Ingredients Showcase).
+  - Configured subtle low opacity (`opacity-10 sm:opacity-12`) with `mix-blend-multiply` and a delicate gradient wash (`from-[#F8F5ED]/30 via-transparent to-[#F8F5ED]/40`), blending the rustic herbal flatlay into the ivory background (`#F8F5ED`) without interfering with text contrast, concentric guide lines, or foreground animations.
+### [2026-10-22 17:16 IST] - Bottle Vertical Positioning Downward Adjustment
+
+- **Component Modified:** [ProductAssembleSection.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/ProductAssembleSection.tsx)
+- **Changes Made:**
+  - Lowered the bottle vertical positioning in `RESPONSIVE_LAYOUTS` across all breakpoints:
+    - **Desktop:** `bottleStartY` increased from `45` to `75` (+30px), and `bottleTravelY` increased from `15` to `50` (+35px).
+    - **Tablet:** `bottleStartY` increased from `35` to `65` (+30px), and `bottleTravelY` increased from `45` to `70` (+25px).
+    - **Mobile:** `bottleStartY` increased from `25` to `55` (+30px), and `bottleTravelY` increased from `35` to `65` (+30px).
+  - Aligned the Section 1 atmospheric concentric blueprint circles container with `translate-y-7 sm:translate-y-9 md:translate-y-11` to maintain centering directly behind the lowered bottle.
+  - Gives more vertical breathing room beneath the editorial headers in both Section 1 and Section 2.
+### [2026-10-22 17:19 IST] - Section 2 (Ingredient Showcase) Final Downward Position Enhancement
+
+- **Component Modified:** [ProductAssembleSection.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/ProductAssembleSection.tsx)
+- **Changes Made:**
+  - Increased `bottleTravelY` across all device breakpoints to position the bottle and bloomed radial botanical composition significantly lower down at the end in Section 2:
+    - **Desktop (`>= 1024px`):** `bottleTravelY` increased from `50` to `110` (+60px further downward).
+    - **Tablet (`640px - 1023px`):** `bottleTravelY` increased from `70` to `115` (+45px further downward).
+    - **Mobile (`< 640px`):** `bottleTravelY` increased from `65` to `100` (+35px further downward).
+  - Offset the desktop flank container (`translate-y-8 lg:translate-y-10 xl:translate-y-12`) so the editorial botanical annotations remain centered with the lowered bottle and blooming ingredients.
+### [2026-10-22 17:46 IST] - Section 2 Mobile Responsiveness & Interactive Botanical Details Showcase
+
+- **Component Modified:** [ProductAssembleSection.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/ProductAssembleSection.tsx)
+- **Root Causes Identified & Resolved:**
+  1. *Section 2 Header Hidden Behind Navbar:* Sticky navbar height (92px on mobile with announcement bar) overlapped `sec2-metadata` which was placed at `top-16` (64px). Adjusted to `top-24 sm:top-28 lg:top-20` (`z-20`) to ensure 100% visibility and clearance below navbar.
+  2. *Botanical Details Hidden on Mobile:* Desktop flank cards were previously constrained with `hidden lg:flex`, leaving mobile users with zero botanical text details or descriptions.
+  3. *Bottle Overlapping Bottom Details:* Lowered bottle position on mobile (`bottleTravelY: 100`) pushed the bottle directly into the bottom card. Rebalanced mobile coordinates (`bottleTravelY: -10`, `tulsi: -135`, etc.) to leave 200px of clean vertical breathing room below the bottle.
+- **Features Implemented:**
+  - **Interactive Mobile Botanical Details Card (`lg:hidden`):** Positioned at `bottom-3 sm:bottom-6` with glassmorphic styling, pill selectors `[Holy Tulsi] [Fenugreek] [Vedic Herbs] [Native Lahsun] [Cumin]`, Latin nomenclature, botanical benefit description, pagination (`1/5`), Prev/Next arrow navigation, and a direct link to explore formulation.
+  - **Tactile Botanical Selection:** Clicking/tapping any of the 5 floating radial ingredients on the canvas activates that botanical, highlights the pill, adds a gold halo ring, and updates the mobile details card instantly.
+### [2026-10-22 18:24 IST] - ProductAssembleSection Background Image & Desktop Bottle Downward Offset
+
+- **Component Modified:** [ProductAssembleSection.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/ProductAssembleSection.tsx)
+- **Changes Applied:**
+  1. **Atmospheric Background Image:** Integrated [assemble-section-bg.png](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/public/images/assemble-section-bg.png) with `opacity-10 sm:opacity-12` and `mix-blend-multiply` inside a sticky full-viewport container (`sticky top-0 h-[100svh] w-full z-0`) with a delicate soft gradient overlay.
+  2. **Desktop Bottle Downward Position:**
+     - Increased `bottleStartY` on desktop from `45` to `75` (+30px downward in Section 1).
+     - Increased `bottleTravelY` on desktop from `15` to `55` (+40px downward in Section 2).
+     - Aligned Section 1 concentric blueprint circles (`translate-y-7 sm:translate-y-9 md:translate-y-11`) to center behind the lowered bottle.
+     - Aligned Section 2 desktop flank cards (`translate-y-6 lg:translate-y-8`) with the lowered bottle and blooming ingredients.
+### [2026-10-22 18:32 IST] - Section 2 Desktop Bottle Position Shifted Further Downward
+
+- **Component Modified:** [ProductAssembleSection.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/ProductAssembleSection.tsx)
+- **Changes Applied:**
+  - Adjusted `desktop.bottleTravelY` from `55` to `95` (+40px downward in Section 2 on desktop screens).
+  - Aligned the Section 2 desktop flank card container (`translate-y-8 lg:translate-y-10`) so the editorial botanical annotations remain centered with the lowered bottle and bloomed radial ingredients.
+- **Verification:**
+  - Next.js 16 build passed with `pnpm --filter @tulsi/web build` (Exit code 0, 22/22 static pages generated).
+
+### [2026-10-22 18:52 IST] - Section 1 Health Benefits & Targeted Problem Description Integration
+
+- **Component Modified:** [ProductAssembleSection.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/ProductAssembleSection.tsx)
+- **Features & Content Added to Section 1 (Assembly Stage):**
+  1. **Desktop Symmetrical Benefit Flanks:**
+     - Styled identically to Section 2's editorial botanical cards with numbered uppercase tags, golden divider lines (`h-px w-6 bg-[#B49A63]/40`), bold serif titles, italic Ayurvedic subheadings, and refined copy.
+     - **Left Flank:**
+       - `01 / METABOLISM` — **Metabolic Vitality** (*Deepana & Digestive Fire*): Stimulates sluggish metabolism, accelerates nutrient assimilation, and eases post-meal heaviness.
+       - `02 / GUT HARMONY` — **Gut & Digestive Ease** (*Microbiome & Motility*): Alleviates bloating and abdominal discomfort, supporting smooth daily motility and gut flora.
+     - **Right Flank:**
+       - `03 / LIVER SUPPORT` — **Hepatic Cleansing** (*Yakrit Shodhana & Bile Flow*): Assists healthy liver bile production and filtration, helping clear accumulated metabolic toxins (Ama).
+       - `04 / WHOLE-BODY` — **Enduring Lightness** (*Clean Everyday Stamina*): Clears sluggish bodily fatigue to restore clean, non-stimulant daytime vigor and whole-body lightness.
+     - Positioned at `z-25` with `w-[440px] xl:w-[500px]` central spacer, perfectly framing the central bottle assembly and blueprint concentric guides.
+  2. **Mobile & Tablet Targeted Health Pillars:**
+     - Added targeted benefit pills beneath the main headline: `[Kindles Metabolism]`, `[Soothes Gut & Bloating]`, `[Supports Liver Health]`.
+     - Added a concise summary note below the bottle assembly: *"Formulated to rekindle sluggish metabolism, ease gut bloating, and rejuvenate liver vitality."*
+  3. **GSAP Timeline Synchronization:**
+     - Set initial visibility to `opacity: 1` so the health benefits are immediately readable when Section 1 is active.
+     - Integrated smooth fade-out in `transitionTimeline` when scrolling from Section 1 into Section 2, ensuring seamless transition between Section 1 (Why you need it) and Section 2 (The 5 sacred herbs inside).
+- **Verification:**
+  - Next.js 16 build passed (`pnpm --filter @tulsi/web build`, Exit code 0, 22/22 static routes compiled).
+  - Browser visual inspection verified cards on both flanks framing the central bottle with crisp legibility.
+
+
 ---
 
 ## 3. Current Architecture & State
