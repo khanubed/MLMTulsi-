@@ -53,9 +53,9 @@ const RESPONSIVE_LAYOUTS: {
     capInitialRotation: -28,
     dropStartY: -390,
     dropEndY: -75,
-    bottleStartY: 75,
+    bottleStartY: 110,
     bottleTravelX: 0,
-    bottleTravelY: 95,
+    bottleTravelY: 130,
     tulsi: { x: 0, y: -230 }, // Top Apex
     fenugreek: { x: -210, y: -75 }, // Upper Left
     herbs: { x: 210, y: -75 }, // Upper Right
@@ -69,9 +69,9 @@ const RESPONSIVE_LAYOUTS: {
     capInitialRotation: -10,
     dropStartY: -350,
     dropEndY: -65,
-    bottleStartY: 35,
+    bottleStartY: 65,
     bottleTravelX: 0,
-    bottleTravelY: 45,
+    bottleTravelY: 75,
     tulsi: { x: 0, y: -220 },
     fenugreek: { x: -160, y: -60 },
     herbs: { x: 160, y: -60 },
@@ -85,9 +85,9 @@ const RESPONSIVE_LAYOUTS: {
     capInitialRotation: -8,
     dropStartY: -290,
     dropEndY: -55,
-    bottleStartY: 25,
+    bottleStartY: 55,
     bottleTravelX: 0,
-    bottleTravelY: 35,
+    bottleTravelY: 65,
     tulsi: { x: 0, y: -190 },
     fenugreek: { x: -125, y: -55 },
     herbs: { x: 125, y: -55 },
@@ -1029,7 +1029,7 @@ export const ProductAssembleSection: React.FC = () => {
 
         {/* Atmospheric Concentric Blueprint Circles Behind Bottle */}
         <div
-          className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 translate-y-7 sm:translate-y-9 md:translate-y-11"
+          className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 translate-y-16 sm:translate-y-18 md:translate-y-24"
           aria-hidden="true"
         >
           <svg
@@ -1135,16 +1135,8 @@ export const ProductAssembleSection: React.FC = () => {
         <div className="relative z-10 w-full max-w-3xl mx-auto space-y-2.5">
           {/* Top Brand Bar & Section Identifier */}
           <div className="w-full flex items-center justify-between pb-2 border-b border-[#183F32]/10 text-[11px] tracking-[0.24em] uppercase font-medium text-[#183F32]/70">
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#B49A63]" />
-              <span className="font-semibold text-[#183F32]">
-                TULSI SWAROJGAR
-              </span>
-            </div>
+
             <div className="flex items-center gap-3">
-              <span className="text-[#B49A63] font-semibold">
-                01 / THE FORMULA
-              </span>
               <span className="hidden sm:inline text-[#183F32]/20">•</span>
               <span className="hidden sm:inline text-[10px] text-[#77796F]">
                 AYURVEDIC WELLNESS
@@ -1153,7 +1145,7 @@ export const ProductAssembleSection: React.FC = () => {
           </div>
 
           {/* Section 1 Editorial Header */}
-          <div ref={sec1HeaderRef} className="space-y-1.5 pt-0.5 px-4">
+          <div ref={sec1HeaderRef} className="space-y-1 pt-0.5 px-4">
             <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-[#183F32]/[0.04] border border-[#183F32]/10 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#B49A63]">
               <span className="w-1 h-1 rounded-full bg-[#B49A63]" />
               <span>THE BOTANICAL FORMULA</span>
@@ -1167,7 +1159,7 @@ export const ProductAssembleSection: React.FC = () => {
             </p>
 
             {/* Targeted Health Pillar Badges (Mobile & Tablet) */}
-            <div className="flex lg:hidden flex-wrap items-center justify-center gap-1.5 sm:gap-2 pt-2.5 max-w-xl mx-auto">
+            <div className="flex lg:hidden flex-wrap items-center justify-center gap-1.5 sm:gap-2 pt-0.5 max-w-xl mx-auto">
               <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#183F32]/[0.05] border border-[#183F32]/10 text-[10px] sm:text-[11px] font-medium text-[#183F32]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#B49A63]" />
                 <span>Kindles Metabolism</span>
@@ -1185,7 +1177,7 @@ export const ProductAssembleSection: React.FC = () => {
         </div>
 
         {/* Desktop Symmetric Flanks: Targeted Health Benefits Framing Central Assembly */}
-        <div className="absolute inset-0 max-w-[1440px] mx-auto px-8 lg:px-12 xl:px-16 flex items-center justify-between pointer-events-none z-25 hidden lg:flex translate-y-6 lg:translate-y-8">
+        <div className="absolute inset-0 max-w-[1440px] mx-auto px-8 lg:px-12 xl:px-16 flex items-center justify-between pointer-events-none z-25 hidden lg:flex translate-y-14 lg:translate-y-18">
           {/* Left Flank: Metabolic Health & Gut Ease */}
           <div className="flex flex-col justify-center space-y-8 xl:space-y-12 max-w-[220px] xl:max-w-[260px] pointer-events-auto text-left">
             {/* 01: Metabolic Vitality */}
@@ -1334,7 +1326,7 @@ export const ProductAssembleSection: React.FC = () => {
         </div>
 
         {/* Desktop Symmetric Layout: Vertically Centered with Symmetrical Left & Right Flank Padding */}
-        <div className="relative w-full max-w-[1440px] mx-auto px-8 lg:px-12 xl:px-16 flex items-center justify-between pointer-events-none z-15 hidden lg:flex translate-y-8 lg:translate-y-10">
+        <div className="relative w-full max-w-[1440px] mx-auto px-8 lg:px-12 xl:px-16 flex items-center justify-between pointer-events-none z-15 hidden lg:flex translate-y-16 lg:translate-y-20">
           {/* Left Flank Annotations (Padded to Left) */}
           <div className="flex flex-col justify-center space-y-7 xl:space-y-9 max-w-[220px] xl:max-w-[260px] pointer-events-auto text-left">
             {/* 01: Holy Tulsi */}
