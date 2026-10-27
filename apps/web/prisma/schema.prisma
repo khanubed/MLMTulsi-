@@ -1,0 +1,610 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ==========================================
+// ENUMS (backend.md Section 5)
+// ==========================================
+
+enum UserRole {
+  MEMBER
+  ADMIN
+  SUPPORT
+  SUPER_ADMIN
+}
+
+enum AddressType {
+  SHIPPING
+  BILLING
+  BOTH
+}
+
+enum CheckoutSessionStatus {
+  INITIATED
+  DETAILS_PROVIDED
+  PHONE_VERIFIED
+  CONFIRMED
+  EXPIRED
+  ABANDONED
+}
+
+enum AccountStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  CLOSED
+}
+
+enum NetworkIdStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  CLOSED
+}
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum OrderPurpose {
+  INITIAL_REGISTRATION
+  ADDITIONAL_ID
+  PRODUCT_PURCHASE
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID
+  PAYMENT_FAILED
+  CANCELLED
+  REFUND_PENDING
+  REFUNDED
+  EXCEPTION
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+}
+
+enum PaymentStatus {
+  CREATED
+  INITIATED
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
+  UNKNOWN
+  REFUND_PENDING
+  REFUNDED
+  RECONCILIATION_REQUIRED
+}
+
+enum PaymentEventProcessingStatus {
+  RECEIVED
+  PROCESSED
+  RETRY
+  REJECTED
+}
+
+enum CommissionStatus {
+  HELD
+  APPROVED
+  BLOCKED
+  REVERSED
+}
+
+enum WithdrawalStatus {
+  PENDING_ADMIN_APPROVAL
+  APPROVED_FOR_PAYOUT
+  PROCESSING
+  PAID
+  REJECTED
+  CANCELLED
+}
+
+enum OutboxJobStatus {
+  PENDING
+  PROCESSING
+  DONE
+  RETRY
+  DEAD
+}
+
+// ==========================================
+// 5.1 USERS
+// ==========================================
+model User {
+  id              String         @id @default(uuid()) @db.Uuid
+  fullName        String         @map("full_name")
+  phoneE164       String         @unique @map("phone_e164")
+  phoneVerifiedAt DateTime?      @map("phone_verified_at") @db.Timestamptz
+  email           String?        @unique
+  passwordHash    String?        @map("password_hash")
+  role            UserRole       @default(MEMBER)
+  status          AccountStatus  @default(ACTIVE)
+  addresses       Address[]
+  sessions        Session[]
+  networkIds      NetworkId[]    @relation("UserNetworkIds")
+  orders          Order[]        @relation("UserOrders")
+  withdrawals     Withdrawal[]
+  walletEntries   WalletLedger[]
+  auditLogs       AuditLog[]     @relation("UserAuditLogs")
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime       @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("users")
+}
+
+// ==========================================
+// 5.2 SESSIONS
+// ==========================================
+model Session {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash  String    @unique @map("token_hash")
+  ipAddress  String?   @map("ip_address")
+  userAgent  String?   @map("user_agent")
+  expiresAt  DateTime  @map("expires_at") @db.Timestamptz
+  revokedAt  DateTime? @map("revoked_at") @db.Timestamptz
+  lastSeenAt DateTime? @map("last_seen_at") @db.Timestamptz
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+// ==========================================
+// 5.3 OTP_CHALLENGES
+// ==========================================
+model OtpChallenge {
+  id                String           @id @default(uuid()) @db.Uuid
+  phoneE164         String           @map("phone_e164")
+  purpose           String           @default("LOGIN") // REGISTRATION, LOGIN, PHONE_CHANGE
+  codeHash          String           @map("code_hash")
+  attemptCount      Int              @default(0) @map("attempt_count")
+  maxAttempts       Int              @default(5) @map("max_attempts")
+  checkoutSessionId String?          @map("checkout_session_id") @db.Uuid
+  checkoutSession   CheckoutSession? @relation(fields: [checkoutSessionId], references: [id], onDelete: Cascade)
+  expiresAt         DateTime         @map("expires_at") @db.Timestamptz
+  consumedAt        DateTime?        @map("consumed_at") @db.Timestamptz
+  createdAt         DateTime         @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([phoneE164, purpose])
+  @@index([checkoutSessionId])
+  @@map("otp_challenges")
+}
+
+// ==========================================
+// 5.4 PRODUCTS
+// ==========================================
+model Product {
+  id             String         @id @default(uuid()) @db.Uuid
+  sku            String         @unique
+  name           String
+  slug           String         @unique
+  description    String?
+  pricePaise     BigInt         @map("price_paise") // Current price; ₹500 = 50,000 paise
+  currency       String         @default("INR") @db.Char(3)
+  isActive       Boolean        @default(true) @map("is_active")
+  status         ProductStatus  @default(PUBLISHED)
+  stockQuantity  Int?           @map("stock_quantity")
+  trackInventory Boolean        @default(false) @map("track_inventory")
+  images           ProductImage[]
+  orders           Order[]           @relation("ProductDirectOrders")
+  checkoutSessions CheckoutSession[]
+  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime          @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status, isActive])
+  @@map("products")
+}
+
+model ProductImage {
+  id        String   @id @default(uuid()) @db.Uuid
+  productId String   @map("product_id") @db.Uuid
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  altText   String?  @map("alt_text")
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("product_images")
+}
+
+// ==========================================
+// 5.5 ORDERS
+// ==========================================
+model Order {
+  id                      String         @id @default(uuid()) @db.Uuid
+  orderNumber             String         @unique @map("order_number")
+  userId                  String?        @map("user_id") @db.Uuid
+  user                    User?          @relation("UserOrders", fields: [userId], references: [id], onDelete: SetNull)
+  productId               String?        @map("product_id") @db.Uuid
+  product                 Product?       @relation("ProductDirectOrders", fields: [productId], references: [id], onDelete: Restrict)
+  productNameSnapshot     String?        @map("product_name_snapshot")
+  productSlugSnapshot     String?        @map("product_slug_snapshot")
+  skuSnapshot             String?        @map("sku_snapshot")
+  networkIdId             String?        @map("network_id_id") @db.Uuid
+  targetNetworkId         NetworkId?     @relation("OrderTargetNetworkId", fields: [networkIdId], references: [id], onDelete: SetNull)
+  intendedParentNetworkId String?        @map("intended_parent_network_id") @db.Uuid
+  intendedParentNetwork   NetworkId?     @relation("OrderIntendedParentNetwork", fields: [intendedParentNetworkId], references: [id], onDelete: SetNull)
+  referralCodeUsed        String?        @map("referral_code_used")
+  purpose                 OrderPurpose   @default(PRODUCT_PURCHASE)
+  quantity                Int            @default(1)
+  unitPricePaise          BigInt         @default(50000) @map("unit_price_paise")
+  subtotalPaise           BigInt         @default(50000) @map("subtotal_paise")
+  shippingPaise           BigInt         @default(0) @map("shipping_paise")
+  taxPaise                BigInt         @default(0) @map("tax_paise")
+  discountPaise           BigInt         @default(0) @map("discount_paise")
+  totalAmountPaise        BigInt         @default(50000) @map("total_amount_paise")
+  status                  OrderStatus    @default(PENDING_PAYMENT)
+  paymentStatus           PaymentStatus  @default(INITIATED) @map("payment_status")
+  customerName            String         @map("customer_name")
+  customerPhone           String         @map("customer_phone")
+  customerEmail           String?        @map("customer_email")
+  shippingAddressId       String?        @map("shipping_address_id") @db.Uuid
+  shippingAddress         Address?       @relation("OrderShippingAddressRef", fields: [shippingAddressId], references: [id], onDelete: SetNull)
+  currency                String         @default("INR") @db.Char(3)
+  idempotencyKey          String?        @map("idempotency_key")
+  paidAt                  DateTime?      @map("paid_at") @db.Timestamptz
+  payments                Payment[]
+  qualifyingId            NetworkId?       @relation("QualifyingOrder")
+  commissions             Commission[]
+  checkoutSession         CheckoutSession? @relation("CheckoutSessionOrder")
+  level1Events            Level1QualificationEvent[]
+  createdAt               DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt               DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([createdAt])
+  @@index([userId])
+  @@index([shippingAddressId])
+  @@index([status, paymentStatus])
+  @@map("orders")
+}
+
+// ==========================================
+// CHECKOUT SESSIONS
+// ==========================================
+model CheckoutSession {
+  id               String                @id @default(uuid()) @db.Uuid
+  productId        String                @map("product_id") @db.Uuid
+  product          Product               @relation(fields: [productId], references: [id], onDelete: Restrict)
+  quantity         Int                   @default(1)
+  unitPricePaise   BigInt                @default(50000) @map("unit_price_paise")
+  totalAmountPaise BigInt                @default(50000) @map("total_amount_paise")
+  status           CheckoutSessionStatus @default(INITIATED)
+  purpose          OrderPurpose          @default(INITIAL_REGISTRATION)
+  customerName     String?               @map("customer_name")
+  customerPhone    String?               @map("customer_phone")
+  customerEmail    String?               @map("customer_email")
+  shippingAddress  Json?                 @map("shipping_address")
+  referralCode     String?               @map("referral_code")
+  sponsorNetworkId String?               @map("sponsor_network_id") @db.Uuid
+  intendedParentId String?               @map("intended_parent_id") @db.Uuid
+  intendedSlot     Int?                  @map("intended_slot")
+  phoneVerifiedAt  DateTime?             @map("phone_verified_at") @db.Timestamptz
+  orderId          String?               @unique @map("order_id") @db.Uuid
+  order            Order?                @relation("CheckoutSessionOrder", fields: [orderId], references: [id], onDelete: SetNull)
+  otpChallenges    OtpChallenge[]
+  expiresAt        DateTime              @map("expires_at") @db.Timestamptz
+  createdAt        DateTime              @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime              @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([customerPhone])
+  @@index([status, expiresAt])
+  @@map("checkout_sessions")
+}
+
+// ==========================================
+// ADDRESSES
+// ==========================================
+model Address {
+  id           String      @id @default(uuid()) @db.Uuid
+  userId       String?     @map("user_id") @db.Uuid
+  user         User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName     String      @map("full_name")
+  phone        String
+  addressLine1 String      @map("address_line_1")
+  addressLine2 String?     @map("address_line_2")
+  landmark     String?
+  city         String
+  state        String
+  postalCode   String      @map("postal_code")
+  country      String      @default("India")
+  type         AddressType @default(SHIPPING)
+  isDefault    Boolean     @default(false) @map("is_default")
+  orders       Order[]     @relation("OrderShippingAddressRef")
+  createdAt    DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime    @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([userId])
+  @@index([postalCode])
+  @@map("addresses")
+}
+
+
+
+// ==========================================
+// 5.6 PAYMENTS
+// ==========================================
+model Payment {
+  id                     String        @id @default(uuid()) @db.Uuid
+  orderId                String        @map("order_id") @db.Uuid
+  order                  Order         @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  provider               String        @default("PHONEPE")
+  merchantOrderId        String        @unique @map("merchant_order_id")
+  providerTransactionId  String?       @unique @map("provider_transaction_id")
+  amountPaise            BigInt        @map("amount_paise")
+  currency               String        @default("INR") @db.Char(3)
+  status                 PaymentStatus @default(INITIATED)
+  providerResponseSafe   Json?         @map("provider_response_safe")
+  providerStatus         String?       @map("provider_status")
+  checkoutUrl            String?       @map("checkout_url")
+  isTestMode             Boolean       @default(false) @map("is_test_mode")
+  mockStatus             String?       @map("mock_status")
+  initiatedAt            DateTime?     @map("initiated_at") @db.Timestamptz
+  verifiedAt             DateTime?     @map("verified_at") @db.Timestamptz
+  createdAt              DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt              DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([orderId, status])
+  @@map("payments")
+}
+
+// ==========================================
+// 5.8 NETWORK_IDS
+// ==========================================
+model NetworkId {
+  id                       String             @id @default(uuid()) @db.Uuid
+  publicId                 String             @unique @map("public_id")
+  referralCode             String             @unique @map("referral_code")
+  ownerUserId              String             @map("owner_user_id") @db.Uuid
+  ownerUser                User               @relation("UserNetworkIds", fields: [ownerUserId], references: [id], onDelete: Restrict)
+  parentNetworkId          String?            @map("parent_network_id") @db.Uuid
+  parentNetwork            NetworkId?         @relation("HierarchyChildren", fields: [parentNetworkId], references: [id], onDelete: Restrict)
+  children                 NetworkId[]        @relation("HierarchyChildren")
+  placements               NetworkPlacement[] @relation("ChildPlacement")
+  parentPlacements         NetworkPlacement[] @relation("ParentPlacement")
+  placementDepth           Int                @default(0) @map("placement_depth")
+  placementPath            String?            @map("placement_path")
+  status                   NetworkIdStatus    @default(ACTIVE)
+  qualifyingOrderId        String?            @unique @map("qualifying_order_id") @db.Uuid
+  qualifyingOrder          Order?             @relation("QualifyingOrder", fields: [qualifyingOrderId], references: [id], onDelete: SetNull)
+  beneficiaryRewards       Commission[]       @relation("BeneficiaryCommissions")
+  sourceRewards            Commission[]       @relation("SourceCommissions")
+  targetOrders             Order[]            @relation("OrderTargetNetworkId")
+  intendedParentForOrders  Order[]            @relation("OrderIntendedParentNetwork")
+  levelSummaries           NetworkLevelSummary[] @relation("NetworkLevelSummaries")
+  level1Qualifications    Level1Qualification[] @relation("NetworkLevel1Qualification")
+  level1Events             Level1QualificationEvent[] @relation("Level1EventChildNetwork")
+  createdAt                DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt                DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([ownerUserId])
+  @@index([parentNetworkId])
+  @@index([placementDepth])
+  @@map("network_ids")
+}
+
+// ==========================================
+// 5.9 NETWORK_PLACEMENTS (Child slots 1..3)
+// ==========================================
+model NetworkPlacement {
+  id              String    @id @default(uuid()) @db.Uuid
+  parentNetworkId String    @map("parent_network_id") @db.Uuid
+  parentNetwork   NetworkId @relation("ParentPlacement", fields: [parentNetworkId], references: [id], onDelete: Restrict)
+  slotNumber      Int       @map("slot_number") // 1, 2, or 3
+  childNetworkId  String    @unique @map("child_network_id") @db.Uuid
+  childNetwork    NetworkId @relation("ChildPlacement", fields: [childNetworkId], references: [id], onDelete: Restrict)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([parentNetworkId, slotNumber])
+  @@map("network_placements")
+}
+
+// ==========================================
+// 5.11 & 5.12 COMMISSION RULE SETS & RULES
+// ==========================================
+model CommissionRuleSet {
+  id          String           @id @default(uuid()) @db.Uuid
+  version     Int              @unique
+  name        String
+  isActive    Boolean          @default(true) @map("is_active")
+  rules       CommissionRule[]
+  commissions Commission[]
+  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("commission_rule_sets")
+}
+
+model CommissionRule {
+  id                  String            @id @default(uuid()) @db.Uuid
+  ruleSetId           String            @map("rule_set_id") @db.Uuid
+  ruleSet             CommissionRuleSet @relation(fields: [ruleSetId], references: [id], onDelete: Cascade)
+  levelNumber         Int               @map("level_number") // 1 through 10
+  rewardAmountPaise   BigInt            @map("reward_amount_paise")
+  requiredDirectSales Int               @default(0) @map("required_direct_sales")
+  createdAt           DateTime          @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([ruleSetId, levelNumber])
+  @@map("commission_rules")
+}
+
+// ==========================================
+// 5.14 COMMISSIONS
+// ==========================================
+model Commission {
+  id                   String            @id @default(uuid()) @db.Uuid
+  beneficiaryNetworkId String            @map("beneficiary_network_id") @db.Uuid
+  beneficiaryNetwork   NetworkId         @relation("BeneficiaryCommissions", fields: [beneficiaryNetworkId], references: [id], onDelete: Restrict)
+  sourceNetworkId      String            @map("source_network_id") @db.Uuid
+  sourceNetwork        NetworkId         @relation("SourceCommissions", fields: [sourceNetworkId], references: [id], onDelete: Restrict)
+  sourceOrderId        String            @map("source_order_id") @db.Uuid
+  sourceOrder          Order             @relation(fields: [sourceOrderId], references: [id], onDelete: Restrict)
+  relativeLevel        Int               @map("relative_level") // 1 to 10
+  amountPaise          BigInt            @map("amount_paise")
+  ruleSetId            String            @map("rule_set_id") @db.Uuid
+  ruleSet              CommissionRuleSet @relation(fields: [ruleSetId], references: [id], onDelete: Restrict)
+  status               CommissionStatus  @default(HELD)
+  planVersion          String            @default("tulsi-v1") @map("plan_version")
+  rewardType           String            @default("ANCESTOR_UPLINE") @map("reward_type") // LEVEL_1_MILESTONE | ANCESTOR_UPLINE
+  idempotencyKey       String?           @unique @map("idempotency_key")
+  blockReason          String?           @map("block_reason")
+  reviewedByAdminId    String?           @map("reviewed_by_admin_id") @db.Uuid
+  reviewedAt           DateTime?         @map("reviewed_at") @db.Timestamptz
+  levelCompleteAt      DateTime?         @map("level_complete_at") @db.Timestamptz
+  level1QualificationRef Level1Qualification? @relation("MilestoneCommissionRef")
+  createdAt            DateTime          @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime          @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([beneficiaryNetworkId, status])
+  @@index([beneficiaryNetworkId, relativeLevel])
+  @@index([sourceOrderId])
+  @@map("commissions")
+}
+
+// ==========================================
+// 5.14.1 NETWORK_LEVEL_SUMMARIES (Precomputed 10 Levels)
+// ==========================================
+model NetworkLevelSummary {
+  id                   String    @id @default(uuid()) @db.Uuid
+  networkId            String    @map("network_id") @db.Uuid
+  network              NetworkId @relation("NetworkLevelSummaries", fields: [networkId], references: [id], onDelete: Cascade)
+  levelNumber          Int       @map("level_number") // 1 through 10
+  earnedAmountPaise    BigInt    @default(0) @map("earned_amount_paise")
+  heldAmountPaise      BigInt    @default(0) @map("held_amount_paise")
+  availableAmountPaise BigInt    @default(0) @map("available_amount_paise")
+  paidAmountPaise      BigInt    @default(0) @map("paid_amount_paise")
+  reversedAmountPaise  BigInt    @default(0) @map("reversed_amount_paise")
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@unique([networkId, levelNumber])
+  @@index([networkId])
+  @@map("network_level_summaries")
+}
+
+// ==========================================
+// 5.14.2 LEVEL_1_QUALIFICATIONS (One-Time Milestone)
+// ==========================================
+model Level1Qualification {
+  id                    String      @id @default(uuid()) @db.Uuid
+  networkId             String      @map("network_id") @db.Uuid
+  network               NetworkId   @relation("NetworkLevel1Qualification", fields: [networkId], references: [id], onDelete: Cascade)
+  planVersion           String      @default("tulsi-v1") @map("plan_version")
+  directPurchaseCount   Int         @default(0) @map("direct_purchase_count") // 0, 1, 2, 3
+  isCompleted           Boolean     @default(false) @map("is_completed")
+  completedAt           DateTime?   @map("completed_at") @db.Timestamptz
+  rewardIssued          Boolean     @default(false) @map("reward_issued")
+  milestoneCommissionId String?     @unique @map("milestone_commission_id") @db.Uuid
+  milestoneCommission   Commission? @relation("MilestoneCommissionRef", fields: [milestoneCommissionId], references: [id], onDelete: SetNull)
+  events                Level1QualificationEvent[]
+  createdAt             DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt             DateTime    @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@unique([networkId, planVersion])
+  @@index([networkId])
+  @@map("level1_qualifications")
+}
+
+model Level1QualificationEvent {
+  id              String               @id @default(uuid()) @db.Uuid
+  qualificationId String               @map("qualification_id") @db.Uuid
+  qualification   Level1Qualification  @relation(fields: [qualificationId], references: [id], onDelete: Cascade)
+  orderId         String               @map("order_id") @db.Uuid
+  order           Order                @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  childNetworkId  String               @map("child_network_id") @db.Uuid
+  childNetwork    NetworkId            @relation("Level1EventChildNetwork", fields: [childNetworkId], references: [id], onDelete: Restrict)
+  createdAt       DateTime             @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([qualificationId, orderId])
+  @@unique([qualificationId, childNetworkId])
+  @@index([orderId])
+  @@map("level1_qualification_events")
+}
+
+// ==========================================
+// 5.15 WALLET_LEDGER
+// ==========================================
+model WalletLedger {
+  id            String    @id @default(uuid()) @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
+  user          User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+  entryType     String    @map("entry_type") // CREDIT, DEBIT, HOLD_RELEASE
+  amountPaise   BigInt    @map("amount_paise")
+  balancePaise  BigInt    @map("balance_paise")
+  referenceType String    @map("reference_type") // COMMISSION, WITHDRAWAL
+  referenceId   String    @map("reference_id")
+  description   String?
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([userId, createdAt])
+  @@map("wallet_ledger")
+}
+
+// ==========================================
+// 5.16 WITHDRAWALS
+// ==========================================
+model Withdrawal {
+  id                 String           @id @default(uuid()) @db.Uuid
+  userId             String           @map("user_id") @db.Uuid
+  user               User             @relation(fields: [userId], references: [id], onDelete: Restrict)
+  amountPaise        BigInt           @map("amount_paise")
+  status             WithdrawalStatus @default(PENDING_ADMIN_APPROVAL)
+  bankAccountDetails Json             @map("bank_account_details")
+  reviewedByAdminId  String?          @map("reviewed_by_admin_id") @db.Uuid
+  reviewedAt         DateTime?        @map("reviewed_at") @db.Timestamptz
+  providerPayoutRef  String?          @unique @map("provider_payout_ref")
+  failureReason      String?          @map("failure_reason")
+  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([userId, status])
+  @@map("withdrawals")
+}
+
+// ==========================================
+// 5.17 OUTBOX_JOBS
+// ==========================================
+model OutboxJob {
+  id            String          @id @default(uuid()) @db.Uuid
+  jobType       String          @map("job_type")
+  aggregateId   String          @map("aggregate_id")
+  payload       Json
+  status        OutboxJobStatus @default(PENDING)
+  attemptCount  Int             @default(0) @map("attempt_count")
+  nextAttemptAt DateTime        @default(now()) @map("next_attempt_at") @db.Timestamptz
+  lastError     String?         @map("last_error")
+  createdAt     DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime        @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status, nextAttemptAt])
+  @@map("outbox_jobs")
+}
+
+// ==========================================
+// 5.18 AUDIT_LOGS
+// ==========================================
+model AuditLog {
+  id          String   @id @default(uuid()) @db.Uuid
+  actorUserId String?  @map("actor_user_id") @db.Uuid
+  actorUser   User?    @relation("UserAuditLogs", fields: [actorUserId], references: [id], onDelete: SetNull)
+  action      String
+  entityType  String   @map("entity_type")
+  entityId    String   @map("entity_id")
+  requestId   String?  @map("request_id")
+  metadata    Json?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([entityType, entityId])
+  @@map("audit_logs")
+}

@@ -1037,10 +1037,45 @@ business events be retried safely.
                                                   without secrets
 
   `createdAt`             DateTime                Audit time
-  ------------------------------------------------------------------------
+### 5.19 `addresses`
 
-**Why:** Financial, access-control and hierarchy changes need
-traceability.
+Stores saved shipping and billing addresses for user accounts.
+
+  -----------------------------------------------------------------------
+  Field                   Suggested type          Purpose
+  ----------------------- ----------------------- -----------------------
+  `id`                    UUID PK                 Address identifier
+
+  `userId`                UUID FK → `users.id`    Owning account (cascade delete)
+
+  `fullName`              String                  Recipient contact name
+
+  `phone`                 String                  Delivery contact phone number
+
+  `addressLine1`          String                  Street address, flat/door number
+
+  `addressLine2`          String nullable         Apartment, suite, unit
+
+  `landmark`              String nullable         Nearby landmark
+
+  `city`                  String                  City/town/district
+
+  `state`                 String                  State or province
+
+  `postalCode`            String                  Postal PIN code (indexed)
+
+  `country`               String                  Default "India"
+
+  `type`                  Enum (`SHIPPING`,       Address classification
+                          `BILLING`, `BOTH`)
+
+  `isDefault`             Boolean                 Primary default address flag
+
+  `createdAt`,            DateTime                Audit timestamps
+  `updatedAt`
+  -----------------------------------------------------------------------
+
+**Why:** Users can maintain saved addresses in their account dashboard for fast, one-click checkout across multiple orders. Orders maintain both an optional relational foreign key (`shippingAddressId`) and an immutable JSON snapshot (`shippingAddress`) at checkout time so subsequent user address edits or deletions never alter historical fulfillment records.
 
 ------------------------------------------------------------------------
 
@@ -1048,9 +1083,11 @@ traceability.
 
 ``` text
 users 1 ───── N sessions
+users 1 ───── N addresses
 users 1 ───── N network_ids
 users 1 ───── N orders
 products 1 ── N orders
+addresses 1 ─ N orders (optional reference; immutable JSON snapshot retained)
 orders 1 ──── N payments
 orders 1 ──── N commissions (depending on rules)
 network_ids 1 ─ N network_ids (parent → children)

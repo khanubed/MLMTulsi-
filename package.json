@@ -11,7 +11,11 @@
     "typecheck": "pnpm -r run typecheck",
     "lint": "pnpm -r run lint",
     "test": "pnpm -r run test",
-    "clean": "pnpm -r run clean"
+    "clean": "pnpm -r run clean",
+    "db:migrate": "pnpm --filter @tulsi/web db:migrate",
+    "db:push": "pnpm --filter @tulsi/web db:push",
+    "db:generate": "pnpm --filter @tulsi/web db:generate",
+    "db:studio": "pnpm --filter @tulsi/web db:studio"
   },
   "devDependencies": {
     "typescript": "^5.7.3"
