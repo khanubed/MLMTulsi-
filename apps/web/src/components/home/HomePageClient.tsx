@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
@@ -53,7 +53,7 @@ export const HomePageClient: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#F8F5ED]">
       {/* 1. HERO SECTION - FULL-WIDTH CINEMATIC BACKGROUND VIDEO */}
-      <section className="relative overflow-hidden min-h-screen lg:h-[720px] lg:max-h-[780px] flex items-center bg-[#183F32] border-b border-[#285642]/60">
+      <section className="relative overflow-hidden min-h-[calc(100svh-5.5rem)] sm:min-h-screen lg:h-[720px] lg:max-h-[780px] flex items-stretch sm:items-center bg-[#183F32] border-b border-[#285642]/60">
         {/* Cinematic Background Video with Poster Fallback & Prefers-Reduced-Motion */}
         <div className="absolute inset-0 w-full h-full overflow-hidden">
           {prefersReducedMotion || videoError ? (
@@ -69,28 +69,27 @@ export const HomePageClient: React.FC = () => {
               loop
               playsInline
               preload="metadata"
-              poster="/images/hero_botanical.png"
+              // poster="/images/hero_botanical.png"
               onError={() => setVideoError(true)}
-              className="w-full h-full object-cover object-[50%_center] sm:object-[68%_center] lg:object-[70%_center]"
+              className="w-full h-full object-cover "
             >
               <source src="/videos/hero-video.mp4" type="video/mp4" />
             </video>
-          )}
+          )} 
 
           {/* Subtle Forest-Green Gradient Overlay */}
-          {/* Mobile: Stronger vertical-to-horizontal gradient to ensure compact text stays readable while product shines */}
-          {/* Desktop: Strongest on left (for text), gradually transparent towards center-right (for jar & label visibility) */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#183F32]/95 via-[#183F32]/60 to-transparent sm:bg-gradient-to-r sm:from-[#183F32]/95 sm:via-[#183F32]/60 sm:to-transparent pointer-events-none" />
+          {/* Mobile: Top-and-bottom vertical gradient ensures top headline and bottom buttons are crystal clear */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(24,63,50,0.60)_0%,rgba(24,63,50,0.52)_20%,rgba(24,63,50,0.38)_32%,rgba(24,63,50,0.18)_44%,rgba(24,63,50,0.04)_54%,rgba(24,63,50,0)_62%,rgba(24,63,50,0.04)_72%,rgba(24,63,50,0.18)_80%,rgba(24,63,50,0.38)_89%,rgba(24,63,50,0.60)_100%)] sm:bg-[linear-gradient(to_right,rgba(24,63,50,0.60)_0%,rgba(24,63,50,0.52)_25%,rgba(24,63,50,0.38)_42%,rgba(24,63,50,0.20)_58%,rgba(24,63,50,0.06)_74%,rgba(24,63,50,0)_88%)] pointer-events-none" />
 
           {/* Bottom subtle edge vignette */}
           <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#183F32]/60 to-transparent pointer-events-none" />
         </div>
 
         {/* Content Container: Kept within existing max-width container, text confined to left 45% */}
-        <div className="relative z-10 w-full max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
-          <div className="w-full sm:max-w-xl lg:max-w-[48%] xl:max-w-[65%] text-left">
-            {/* Top Block: Eyebrow badge, Headline, Paragraph */}
-            <div className="space-y-5 sm:space-y-6">
+        <div className="relative z-10 w-full max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-16 lg:py-20">
+          <div className="w-full flex flex-col justify-between min-h-[calc(100svh-7rem)] sm:min-h-0 sm:block sm:max-w-xl lg:max-w-[48%] xl:max-w-[65%] text-left">
+            {/* Top Block: Eyebrow badge, Headline, Paragraph (top of screen below navbar on mobile) */}
+            <div className="space-y-3 sm:space-y-6  pt-2 sm:pt-0">
               {/* Eyebrow badge */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#183F32]/80 backdrop-blur-md border border-[#A9B7A0]/40 text-xs font-semibold text-[#F8F5ED] shadow-sm">
                 <Leaf className="w-3.5 h-3.5 text-[#A9B7A0]" />
@@ -101,7 +100,6 @@ export const HomePageClient: React.FC = () => {
                     ₹999
                   </span>
                   <span>₹500</span>
-              
                 </span>
               </div>
 
@@ -109,23 +107,23 @@ export const HomePageClient: React.FC = () => {
               <h1 className="text-3xl sm:text-5xl lg:text-[54px] xl:text-6xl font-serif text-[#F8F5ED] leading-[1.12] tracking-tight">
                 Rooted in Nature.
                 <br />
-                <span className="italic font-normal text-[#F8F5ED]/90 block mt-1 sm:mt-2">
+                <span className="italic font-normal text-2xl sm:text-5xl lg:text-[54px] xl:text-6xl text-[#F8F5ED]/90 block mt-1 sm:mt-2">
                   Made for Everyday Rituals.
                 </span>
               </h1>
 
               {/* Supporting Paragraph */}
-              <p className="text-sm max-sm:pb-12 sm:text-base lg:text-lg text-[#F8F5ED]/90 max-w-lg leading-relaxed font-sans">
+              <p className="text-sm sm:text-base lg:text-lg text-[#F8F5ED]/90 max-w-lg leading-relaxed font-sans">
                 Discover Tulsi Swaraj and our mindful approach to bringing pure,
                 thoughtfully prepared Indian herbal blends into your daily
                 morning and evening wellness routines.
               </p>
             </div>
 
-            {/* Bottom Block: Trust Markers & Action Buttons with dedicated mobile spacing */}
-            <div className="mt-12 sm:mt-6 space-y-5">
-                           {/* Action Buttons - 2 in a row on mobile and desktop */}
-              <div className="sm:pt-2 pt-12  grid grid-cols-2 sm:flex sm:flex-row items-center justify-start gap-2.5 sm:gap-4">
+            {/* Bottom Block: Trust Markers & Action Buttons (bottom of screen on mobile) */}
+            <div className="mt-auto sm:mt-6 space-y-4 sm:space-y-5 pt-6 sm:pt-0 pb-1 sm:pb-0">
+              {/* Action Buttons - 2 in a row on mobile and desktop */}
+              <div className="grid grid-cols-2 sm:flex sm:flex-row items-center justify-start gap-2.5 sm:gap-4 sm:pt-2">
                 <button
                   onClick={() =>
                     router.push("/products/tulsi-meta-ved-herbal-mix")
@@ -147,22 +145,24 @@ export const HomePageClient: React.FC = () => {
                 </Link>
               </div>
               {/* Trust Markers */}
-              <div className="pt-5 grid grid-cols-3 gap-3 border-t border-[#F8F5ED]/20 text-left">
+              <div className="grid grid-cols-3 gap-3 border-t max-w-2xl border-[#F8F5ED]/20 text-left">
                 <div className="p-1">
                   <p className="font-serif text-base sm:text-lg font-bold text-[#F8F5ED]">
                     100%
                   </p>
-                  <p className="text-[11px] sm:text-xs text-[#A9B7A0] leading-tight mt-0.5">
+                  <p className="text-[11px] sm:text-xs text-[#F8F5ED] leading-tight mt-0.5">
                     Botanical Heritage
                   </p>
                 </div>
                 <div className="p-1">
                   <p className="font-serif text-base sm:text-lg font-bold text-[#F8F5ED] flex items-baseline gap-1.5 flex-wrap">
-                    <span className="line-through font-extralight text-xs opacity-75">₹999</span>
+                    <span className="line-through font-extralight text-xs opacity-75">
+                      ₹999
+                    </span>
                     <span>₹500</span>
                     {/* <span className="text-[10px] text-emerald-300 font-sans font-semibold bg-emerald-950/60 border border-emerald-500/30 px-1 py-0.5 rounded">50% OFF</span> */}
                   </p>
-                  <p className="text-[11px] sm:text-xs text-[#A9B7A0] leading-tight mt-0.5">
+                  <p className="text-[11px] sm:text-xs text-[#F8F5ED] leading-tight mt-0.5">
                     Launch Price (50% Off)
                   </p>
                 </div>
@@ -170,13 +170,11 @@ export const HomePageClient: React.FC = () => {
                   <p className="font-serif text-base sm:text-lg font-bold text-[#F8F5ED]">
                     Free
                   </p>
-                  <p className="text-[11px] sm:text-xs text-[#A9B7A0] leading-tight mt-0.5">
+                  <p className="text-[11px] sm:text-xs text-[#F8F5ED] leading-tight mt-0.5">
                     India Dispatch
                   </p>
                 </div>
               </div>
-
- 
             </div>
           </div>
         </div>
@@ -240,7 +238,9 @@ export const HomePageClient: React.FC = () => {
                 />
                 <div className="absolute top-4 left-4 bg-[#183F32] text-[#F8F5ED] text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md">
                   <span>₹500</span>
-                  <span className="line-through text-xs text-[#A9B7A0]">₹999</span>
+                  <span className="line-through text-xs text-[#A9B7A0]">
+                    ₹999
+                  </span>
                   <span className="bg-emerald-500/20 text-emerald-300 text-[10px] px-1.5 py-0.5 rounded font-bold border border-emerald-400/30">
                     50% OFF
                   </span>
@@ -273,11 +273,14 @@ export const HomePageClient: React.FC = () => {
                   </span>
                   <div className="flex items-center gap-1.5 text-xs sm:text-sm text-[#77796F]">
                     <span>M.R.P.:</span>
-                    <span className="line-through text-[#77796F]/90 font-medium">₹999</span>
+                    <span className="line-through text-[#77796F]/90 font-medium">
+                      ₹999
+                    </span>
                   </div>
                 </div>
                 <p className="text-xs text-emerald-700 font-semibold">
-                  Special Launch Offer: Save ₹499 (50% off ₹999) • Complimentary delivery across India
+                  Special Launch Offer: Save ₹499 (50% off ₹999) • Complimentary
+                  delivery across India
                 </p>
               </div>
 
@@ -442,8 +445,10 @@ export const HomePageClient: React.FC = () => {
                 Fair & Clear Pricing
               </h3>
               <p className="text-xs text-[#77796F] leading-relaxed">
-                Special introductory price of <span className="line-through font-thin">₹999</span> ₹500 (50% launch discount) with no hidden fees,
-                or fabricated checkout charges.
+                Special introductory price of{" "}
+                <span className="line-through font-thin">₹999</span> ₹500 (50%
+                launch discount) with no hidden fees, or fabricated checkout
+                charges.
               </p>
             </div>
 

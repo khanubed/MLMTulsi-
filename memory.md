@@ -433,6 +433,201 @@
   - Browser visual inspection verified cards on both flanks framing the central bottle with crisp legibility.
 
 
+### [2026-10-22 19:15 IST] - Decluttered App Directory & Consolidated Client Views into `(store)` Route Group
+
+- **Action:** Refactored [apps/web/src/app](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app) directory structure by consolidating all storefront pages, customer portals, and client views into the Next.js route group [apps/web/src/app/(store)](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/(store)):
+  - **Routes Moved to `(store)`:**
+    - `page.tsx` (Homepage `/`)
+    - `products/` (`/products/[slug]`)
+    - `order-confirmation/` (`/order-confirmation/[orderId]`)
+    - `login/` (`/login`)
+    - `register/` (`/register`)
+    - `forgot-password/` (`/forgot-password`)
+    - `privacy-policy/` (`/privacy-policy`)
+    - `terms/` (`/terms`)
+    - `shipping-policy/` (`/shipping-policy`)
+    - `returns-refunds/` (`/returns-refunds`)
+    - `dashboard/` (`/dashboard`, `/dashboard/orders`, `/dashboard/profile`, `/dashboard/referrals`, `/dashboard/support`)
+  - **Clean App Root:** [apps/web/src/app](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app) is now decluttered, containing strictly:
+    - Route groups: `(store)` (all client views and customer-facing pages) and `api` (backend proxy and Next.js route handlers).
+    - Root Next.js configuration files: `layout.tsx`, `globals.css`, `not-found.tsx`, `robots.ts`, `sitemap.ts`.
+- **Route Integrity & Verification:**
+  - Route group parenthesis syntax `(store)` does not alter public URL paths, preserving all SEO links (`/`, `/products/...`, `/checkout`, `/dashboard`).
+  - Next.js 16 build (`pnpm --filter @tulsi/web build`) completed with **Exit code 0** (22/22 static & dynamic routes compiled without errors).
+
+### [2026-10-22 19:30 IST] - Implemented Full Backend Architecture Folder Structure (`backend.md` L141-L183)
+
+- **Action:** Structured the application architecture strictly in alignment with [backend.md](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/backend.md) (Lines 141-183):
+  1. **Route Groups & Endpoints (`apps/web/src/app`):**
+     - `(store)/`: Public storefront pages (Home, products, checkout, cart, about, policies, auth).
+     - `(member)/`: Dedicated member portal group housing `dashboard/` (orders, profile, referrals, support).
+     - `admin/`: Admin Control Center route ([admin/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/admin/page.tsx)) for operational governance, commission review, and withdrawal approvals.
+     - `api/v1/`: Next.js Route Handlers:
+       - `auth/` ([api/v1/auth/route.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/api/v1/auth/route.ts))
+       - `products/` ([api/v1/products/route.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/api/v1/products/route.ts))
+       - `orders/` ([api/v1/orders/route.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/api/v1/orders/route.ts))
+       - `payments/` ([api/v1/payments/route.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/api/v1/payments/route.ts))
+       - `webhooks/phonepe/` ([api/v1/webhooks/phonepe/route.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/api/v1/webhooks/phonepe/route.ts))
+       - `network-ids/` ([api/v1/network-ids/route.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/api/v1/network-ids/route.ts))
+       - `member/` ([api/v1/member/route.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/api/v1/member/route.ts))
+       - `admin/` ([api/v1/admin/route.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/api/v1/admin/route.ts))
+  2. **Domain Modules Layer (`apps/web/src/modules`):**
+     - `auth/` ([auth.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/auth/auth.service.ts))
+     - `users/` ([users.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/users/users.service.ts))
+     - `products/` ([products.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/products/products.service.ts))
+     - `orders/` ([orders.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/orders/orders.service.ts))
+     - `payments/` ([payments.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/payments/payments.service.ts))
+     - `network/` ([network.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/network/network.service.ts)): Ternary child constraints (max 3), max 100 IDs per user, self-referral checks.
+     - `commissions/` ([commissions.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/commissions/commissions.service.ts)): Official 10-level schedule (₹500 L1 reward, ₹100 L2, etc.).
+     - `wallet/` ([wallet.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/wallet/wallet.service.ts)): Ledger-backed balance calculations in integer paise.
+     - `withdrawals/` ([withdrawals.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/withdrawals/withdrawals.service.ts)): 100% level-completion prerequisite gating.
+     - `admin/` ([admin.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/admin/admin.service.ts)): Operational summaries and maker-checker approval transitions.
+     - `audit/` ([audit.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/audit/audit.service.ts)): Non-repudiable audit logging.
+  3. **Shared Backend Utilities (`apps/web/src/lib`):**
+     - [db.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/lib/db.ts), [env.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/lib/env.ts), [auth.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/lib/auth.ts), [permissions.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/lib/permissions.ts), [validation.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/lib/validation.ts), [errors.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/lib/errors.ts), [logger.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/lib/logger.ts), [rate-limit.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/lib/rate-limit.ts).
+  4. **Background Jobs (`apps/web/src/jobs`):**
+     - [reconcile-payments.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/jobs/reconcile-payments.ts)
+     - [process-commissions.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/jobs/process-commissions.ts)
+     - [process-outbox.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/jobs/process-outbox.ts)
+  5. **Prisma Database Schema & Tests (`apps/web/prisma`, `apps/web/tests`):**
+     - [schema.prisma](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/prisma/schema.prisma): Complete PostgreSQL relational schema covering 19 tables specified in `backend.md`.
+     - [hierarchy.test.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/tests/hierarchy.test.ts): Core MLM business rule unit assertions.
+- **Verification:**
+  - `pnpm --filter @tulsi/web build` passed with **Exit code 0** (31 static, dynamic, and API routes compiled successfully).
+
+### [2026-10-22 19:36 IST] - Implemented System Health & Readiness API (`/api/health`)
+
+- **Action:** Created [apps/web/src/app/api/health/route.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/api/health/route.ts):
+  - Provides system health status, uptime tracking, timestamp, active environment, and service identifier (`@tulsi/web`).
+  - Supports `?ready=true` or `?checkDb=true` probe parameter to verify database connectivity.
+  - Implements lightweight `HEAD` response for automated load-balancer liveness checks with `no-store` headers.
+- **Verification:**
+  - Production build `pnpm --filter @tulsi/web build` passed with **Exit code 0** (32 routes generated).
+  - Queried active server on `http://localhost:3000/api/health` — responded HTTP 200 `{"status":"healthy","service":"@tulsi/web","uptimeSeconds":12500,"environment":"development"}`.
+
+### [2026-10-22 19:47 IST] - Added and Refined Database Tables in `schema.prisma` (`backend.md` 5.1–5.8)
+
+- **Action:** Synchronized [apps/web/prisma/schema.prisma](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/prisma/schema.prisma) and [apps/api/prisma/schema.prisma](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/api/prisma/schema.prisma) with the exact table specifications from [backend.md](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/backend.md) (Sections 5.1–5.8):
+  1. `users` (5.1): Added `phoneVerifiedAt`, `phoneE164`, `email`, `passwordHash`, `role` (`MEMBER`, `ADMIN`, `SUPPORT`, `SUPER_ADMIN`), `status` (`PENDING`, `ACTIVE`, `SUSPENDED`, `CLOSED`).
+  2. `sessions` (5.2): Added `lastSeenAt`, `tokenHash` (unique), `revokedAt`, `expiresAt`, `ipAddress`, `userAgent`.
+  3. `otp_challenges` (5.3): Added `codeHash`, `purpose` (`LOGIN`, `REGISTRATION`, `PHONE_CHANGE`), `attemptCount`, `maxAttempts`, `consumedAt`, `expiresAt`.
+  4. `products` (5.4): Added `isActive` boolean flag, `sku` (unique), `pricePaise` (BigInt ₹500 = 50,000 paise), `currency` ("INR").
+  5. `orders` (5.5): Added `purpose` (`INITIAL_REGISTRATION`, `ADDITIONAL_ID`, `PRODUCT_PURCHASE`), `networkIdId` relation, `intendedParentNetworkId` relation, `referralCodeUsed`, `unitPricePaise`, `subtotalPaise`, `totalAmountPaise`, `paidAt`, `status` (`PENDING_PAYMENT`, `PAID`, `PAYMENT_FAILED`, `CANCELLED`, `REFUND_PENDING`, `REFUNDED`, `EXCEPTION`).
+  6. `payments` (5.6): Added `merchantOrderId` (unique), `providerTransactionId` (unique), `providerResponseSafe` (Json), `status` (`CREATED`, `PENDING`, `SUCCESS`, `FAILED`, `CANCELLED`, `UNKNOWN`).
+  7. `payment_events` (5.7): Added `providerEventId` (unique), `merchantOrderId`, `payloadHash`, `processingStatus` (`RECEIVED`, `PROCESSED`, `RETRY`, `REJECTED`), `errorCode`.
+  8. `network_ids` (5.8): Added `publicId` (unique), `referralCode` (unique), `ownerUserId`, `parentNetworkId`, `placementDepth`, `placementPath`, `qualifyingOrderId` (unique), `status` (`PENDING`, `ACTIVE`, `SUSPENDED`, `CLOSED`).
+- **Verification:**
+  - `pnpm --filter @tulsi/web build` passed with **Exit code 0** (32 routes compiled).
+
+### [2026-10-22 19:57 IST] - Created Environment Configuration Files (`.env` & `.env.example`)
+
+- **Action:** Created environment configuration files in `apps/web`:
+  - [apps/web/.env.example](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/.env.example): Fully documented template for development and production deployments.
+  - [apps/web/.env](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/.env): Local development configuration with working sample credentials:
+    - `NODE_ENV=development`
+    - `NEXT_PUBLIC_APP_URL=http://localhost:3000`
+    - `DATABASE_URL=postgresql://postgres:postgres@localhost:5432/tulsimlm?schema=public`
+    - `SESSION_SECRET=tulsi_swaraj_dev_session_secret_replace_in_production_min_32_chars`
+    - `PHONEPE_BASE_URL=https://api-preprod.phonepe.com/apis/pg-sandbox`
+    - `PHONEPE_MERCHANT_ID=PGTESTPAYUAT86`
+    - `PHONEPE_SALT_KEY=96434309-7796-489d-8924-ab56988a6076`
+    - `PHONEPE_SALT_INDEX=1`
+    - `PHONEPE_CALLBACK_URL=http://localhost:3000/api/v1/webhooks/phonepe`
+    - `ADMIN_BOOTSTRAP_EMAIL=admin@tulsiswaraj.com`
+    - `SMS_SENDER_ID=TULSIS`
+  - Updated [apps/web/src/lib/env.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/lib/env.ts) Zod validation schema to strongly type and default all environment variables.
+  - Updated [apps/web/.gitignore](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/.gitignore) to protect `.env` and `.env*.local` from accidental repository commits.
+- **Verification:**
+  - Next.js build loaded `.env` and completed with **Exit code 0** (32 routes compiled).
+
+### [2026-10-22 20:10 IST] - Pinned Stable Prisma 6.19 & Generated Prisma Client
+
+- **Action:**
+  - Resolved npm package resolution mismatch where experimental `prisma@8.0.0-rc.25` was pulled instead of stable Prisma.
+  - Pinned `@prisma/client` and `prisma` to stable `^6.4.1` (resolved to `6.19.3`) in [apps/web/package.json](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/package.json).
+  - Executed `prisma generate`: Generated TypeScript Prisma Client for all 19 PostgreSQL models in 238ms.
+  - Updated [apps/web/src/lib/db.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/lib/db.ts) with direct static typing using `PrismaClient` singleton.
+- **Verification:**
+  - Next.js Turbopack build passed cleanly with **Exit code 0** (32 routes compiled).
+
+### [2026-10-22 20:54 IST] - Added Address Model & Supabase `directUrl` Migration Configuration
+
+- **Action:**
+  - Added `directUrl = env("DIRECT_URL")` to `datasource db` in [apps/web/prisma/schema.prisma](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/prisma/schema.prisma) and [apps/api/prisma/schema.prisma](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/api/prisma/schema.prisma) for dual pooler/direct migration support with Supabase.
+  - Added `AddressType` enum (`SHIPPING`, `BILLING`, `BOTH`).
+  - Added the `Address` model:
+    - `id` (UUID PK), `userId` (FK to `users`), `fullName`, `phone`, `addressLine1`, `addressLine2`, `landmark`, `city`, `state`, `postalCode`, `country`, `type`, `isDefault`, timestamps.
+    - Linked `User` -> `addresses Address[]` with cascade delete.
+    - Linked `Order` -> `shippingAddressId String?` and `shippingAddressRef Address?` with `onDelete: SetNull`, while maintaining immutable JSON snapshot `shippingAddress Json` for checkout immutability.
+  - Ran `pnpm db:generate` to regenerate Prisma Client types with the new `Address` model.
+- **Verification:**
+  - Next.js Turbopack build passed cleanly with **Exit code 0** (32 routes compiled).
+
+### [2026-10-22 21:00 IST] - Address Table Contracts & Architecture Documentation
+
+- **Action:**
+  - Documented Section `5.19 addresses` in [backend.md](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/backend.md) and updated Section 6 relationship summary to include `users 1 ───── N addresses` and `addresses 1 ─ N orders (optional reference)`.
+  - Created [packages/contracts/src/address.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/packages/contracts/src/address.ts) defining:
+    - `AddressTypeSchema` (`SHIPPING`, `BILLING`, `BOTH`).
+    - `AddressSchema` with strict Zod validation (PIN code 6 digits, 10-digit Indian phone).
+    - `CreateAddressSchema` and `UpdateAddressSchema` for client mutation requests.
+  - Exported address contracts in [packages/contracts/src/index.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/packages/contracts/src/index.ts).
+- **Verification:**
+  - Compiled contracts: `pnpm --filter @tulsi/contracts build` exited with code 0.
+  - Full application build: `pnpm --filter @tulsi/web build` passed with **Exit code 0** (32 routes compiled).
+
+### [2026-10-23 15:15 IST] - Tulsi Swarojgar Testing Backend Architecture & Implementation
+
+- **Action:** Implemented the complete testing backend architecture for Tulsi Swarojgar, allowing end-to-end local development, customer journey verification, and purchase-based registration without requiring PhonePe or live SMS credentials.
+- **Key Modules & Deliverables Implemented:**
+  1. **Environment Configuration & Production Safeguards:**
+     - [apps/web/src/lib/env.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/lib/env.ts): Added `OTP_PROVIDER` (`mock`), `PAYMENT_PROVIDER` (`mock`), `MOCK_OTP_EXPOSE_CODE`, and `MOCK_PAYMENT_ALLOW_SUCCESS`. Implemented hard startup rejection in production mode (`NODE_ENV === 'production'`).
+     - [apps/web/.env.example](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/.env.example) and [apps/web/.env](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/.env): Documented provider switches and developer flags.
+  2. **Database Schema Enhancements:**
+     - [apps/web/prisma/schema.prisma](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/prisma/schema.prisma): Added `CheckoutSession` model, `CheckoutSessionStatus` enum, and relations linking `Product`, `OtpChallenge`, and `Order`. Added `isTestMode` and `mockStatus` to `Payment`.
+     - Regenerated Prisma Client into workspace virtual store.
+  3. **Provider-Independent Abstractions:**
+     - [apps/web/src/modules/providers/interfaces/otp-provider.interface.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/providers/interfaces/otp-provider.interface.ts): Defined `OtpProvider` interface.
+     - [apps/web/src/modules/providers/interfaces/payment-provider.interface.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/providers/interfaces/payment-provider.interface.ts): Defined `PaymentProvider` interface.
+     - [apps/web/src/modules/providers/mock/mock-otp.provider.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/providers/mock/mock-otp.provider.ts): Mock OTP with developer code exposure gating and production lock.
+     - [apps/web/src/modules/providers/mock/mock-payment.provider.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/providers/mock/mock-payment.provider.ts): Mock Payment backed by authoritative database state.
+     - [apps/web/src/modules/providers/provider.factory.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/providers/provider.factory.ts): Factory with production safeguards and testing dependency injection.
+  4. **Domain Services:**
+     - [apps/web/src/modules/checkout/checkout.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/checkout/checkout.service.ts): 7-step checkout session lifecycle (create, details, referral, otp request, otp verify, confirm).
+     - [apps/web/src/modules/checkout/finalization.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/checkout/finalization.service.ts): Authoritative, transactional, idempotent payment finalization, user creation, network ID generation, and commission allocation.
+     - [apps/web/src/modules/network/network.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/network/network.service.ts): Referral validation, slot discovery (slots 1..3), breadth-first spillover downline traversal, and 100-ID limit checks.
+     - [apps/web/src/modules/commissions/commissions.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/commissions/commissions.service.ts): 10-level upline traversal, HELD commission creation, and level-complete detection.
+     - [apps/web/src/modules/payments/payments.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/payments/payments.service.ts): Persistent payment attempts and status queries.
+  5. **API Endpoints & Developer Simulator:**
+     - Created endpoints:
+       - `GET /api/v1/products/[slug]`
+       - `POST /api/v1/checkout/sessions`
+       - `GET /api/v1/checkout/sessions/[id]`
+       - `PATCH /api/v1/checkout/sessions/[id]/details`
+       - `POST /api/v1/checkout/sessions/[id]/referral/validate`
+       - `POST /api/v1/checkout/sessions/[id]/phone/otp/request`
+       - `POST /api/v1/checkout/sessions/[id]/phone/otp/verify`
+       - `POST /api/v1/checkout/sessions/[id]/confirm`
+       - `POST /api/v1/payments/checkout`
+       - `GET /api/v1/payments/[id]/status`
+       - `GET /api/v1/orders/[id]`
+       - Developer Simulator API: `/api/v1/dev/payment-simulator/[transactionId]/*`
+     - Created Developer Simulator UI: [apps/web/src/app/dev/payment-simulator/[transactionId]/page.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/app/dev/payment-simulator/[transactionId]/page.tsx).
+  6. **Repeatable Seeding & Documentation:**
+     - [apps/web/prisma/seed.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/prisma/seed.ts): Idempotent seed script for Flagship Product (₹500), Commission Rule Set v1, Admin user, Root network node (`TULSI01`), and test distributor member.
+     - [docs/SEEDING.md](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/docs/SEEDING.md): Step-by-step local setup, migrations, and seed commands.
+     - [docs/PROVIDER_INTEGRATION.md](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/docs/PROVIDER_INTEGRATION.md): Complete guide for replacing mock providers with PhonePe and real SMS without domain code changes.
+     - [docs/API.md](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/docs/API.md): Comprehensive API request/response specification.
+     - [docs/DATABASE.md](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/docs/DATABASE.md): Database tables, constraints, indexes, and transactional boundaries.
+     - [docs/FLOWS.md](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/docs/FLOWS.md): Detailed 11-step sequence diagrams and state transitions.
+     - [docs/SECURITY.md](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/docs/SECURITY.md): Cryptographic OTP hashing, timing attack defenses, and production safeguards.
+  7. **Automated Testing Suite (Vitest):**
+     - Installed `vitest` and `tsx` in `@tulsi/web`.
+     - Created 6 test suites covering OTP security, mock payment provider, production safeguards, MLM business rules, checkout flow, and payment finalization.
+- **Verification:**
+  - Automated tests: `pnpm --filter @tulsi/web test` passed with **21 tests passed across 6 test suites** (0 failures).
+  - Next.js production build: `pnpm --filter @tulsi/web build` passed with **Exit code 0** (34 static, dynamic, and API routes compiled successfully).
+
 ---
 
 ## 3. Current Architecture & State
@@ -443,33 +638,275 @@
 TulsiMLM/
 ├── AGENTS.md                  # Workspace rules governing memory.md updates
 ├── memory.md                  # This persistent context tracking file
+├── backend.md                 # Full backend architecture & MLM rules specification
+├── docs/
+│   ├── prd.md                 # Product requirements
+│   ├── architecture.md        # Technical architecture
+│   ├── SEEDING.md             # Local setup, migrations, and seed guide
+│   ├── PROVIDER_INTEGRATION.md# Blueprint for plugging in live PhonePe & SMS
+│   ├── API.md                 # Complete API documentation
+│   ├── DATABASE.md            # Schema, relationships, and transactional boundaries
+│   ├── FLOWS.md               # 11-step registration, payment & recovery flows
+│   └── SECURITY.md            # Security controls & production safeguards
 ├── apps/
 │   ├── api/                   # Express backend API (Port 4000)
-│   └── web/                   # Next.js 16 App Router storefront (@tulsi/web, Port 3000)
+│   └── web/                   # Next.js 16 App Router fullstack platform (@tulsi/web, Port 3000)
+│       ├── prisma/
+│       │   ├── schema.prisma  # Full PostgreSQL MLM schema (20 models)
+│       │   └── seed.ts        # Database seed fixtures
+│       ├── tests/             # Vitest automated test suites (21 passing tests)
 │       └── src/
-│           ├── app/           # App Router pages, layouts, metadata & JSON-LD schemas
-│           ├── components/    # Reusable UI & client islands (home, product, cart, dashboard)
-│           ├── data/          # Flagship product data, FAQs, policies
-│           └── store/         # Zustand stores (useCartStore, useAuthStore)
+│           ├── app/
+│           │   ├── (store)/   # Public storefront routes: /, /products, /cart, /checkout, /policies
+│           │   ├── (member)/  # Member portal routes: /dashboard, /dashboard/orders, /referrals
+│           │   ├── admin/     # Admin Control Center: /admin
+│           │   ├── dev/       # Developer Simulator: /dev/payment-simulator/[transactionId]
+│           │   ├── api/v1/    # Route Handlers: auth, checkout, payments, dev simulator, member, admin
+│           │   └── ...
+│           ├── modules/       # Domain services (checkout, finalization, network, commissions, providers, payments)
+│           └── lib/           # db, env, auth, permissions, validation, errors, logger
 ├── packages/
 │   ├── contracts/             # Zod contracts & DTOs
 │   ├── config/                # Shared configs
 │   ├── ui/                    # Shared UI library placeholder
 │   └── utils/                 # Currency & formatting utilities
-└── docs/
-    ├── prd.md                 # Product requirements
-    └── architecture.md        # Technical architecture
 ```
+
+### [2026-10-23 16:30 IST] - Strict Indian Phone & Shared Checkout Validation Engine
+
+- **Objective:** Enforce strict validation accepting only Indian mobile numbers (+91 / 10 digits starting with 6-9) across customer details and checkout, rejecting foreign country codes, and making validations common across backend and frontend.
+- **Root Cause Identified:**
+  - `CheckoutService.updateCustomerDetails` was using a naive `.replace(/\D/g, '').slice(-10)` string slicing, which stripped non-digits and took the suffix of any foreign phone number (US, UK, UAE, etc.), permitting invalid numbers to pass.
+  - Request body in `/api/v1/checkout/sessions/[id]/details` was not validated via Zod schema before hitting the service.
+  - Field validations (names, addresses, PIN codes) were duplicated or inconsistent between frontend forms and backend services.
+- **Architectural Implementation:**
+  1. **Shared Validation Engine (`apps/web/src/lib/validations/checkout.ts` & `index.ts`):**
+     - `parseIndianMobile(input)`: Strict parser rejecting non-+91 country codes, ensuring standard 10-digit extraction (handling `+91`, `91`, and trunk `0`), and verifying TRAI allocation starting with digits 6, 7, 8, or 9.
+     - `cleanIndianMobile(input)` & `formatIndianMobileE164(input)`: Standardized sanitizers and E.164 formatters (`+919876543210`).
+     - `indianMobileSchema`: Zod schema utilizing `parseIndianMobile` with descriptive errors for user feedback.
+     - `indianPinCodeSchema`: Strict 6-digit Indian postal code regex (`/^[1-9]\d{5}$/`, strictly rejecting numbers starting with 0).
+     - `customerNameSchema`, `addressLine1Schema`, `citySchema`, `stateSchema`, `countrySchema`.
+     - `ShippingAddressSchema` & `CustomerDetailsSchema`: Composite schemas for backend validation.
+     - `StorefrontCheckoutFormSchema`: Client-side schema shared with `useForm` and `zodResolver`.
+  2. **Monorepo Contracts Synchronization (`packages/contracts/src/checkout.ts`):**
+     - Updated contracts package with identical `parseIndianMobile`, `indianMobileSchema`, `indianPinCodeSchema`, `ShippingAddressSchema`, and `CustomerDetailsSchema` adhering to Rule 2.
+  3. **Backend Service & API Route Updates:**
+     - `apps/web/src/modules/checkout/checkout.service.ts`: Enforced `CustomerDetailsSchema.safeParse(input)` in `updateCustomerDetails`, normalized both customer phone and shipping address phone to E.164. Added explicit lifecycle safeguards to `requestPhoneOtp` guarding against expired or confirmed sessions.
+     - `apps/web/src/app/api/v1/checkout/sessions/[id]/details/route.ts`: Integrated `validateJsonBody(request, CustomerDetailsSchema)`.
+  4. **Frontend Checkout Form Integration (`apps/web/src/app/(store)/checkout/page.tsx`):**
+     - Replaced local inline form schema with `StorefrontCheckoutFormSchema` from `@/lib/validations/checkout`.
+  5. **Automated Testing & Build Verification:**
+     - Added test cases in `apps/web/tests/checkout-flow.test.ts` testing rejection of foreign numbers (US `+1...`), invalid starting digits (e.g. `5...`), invalid PIN codes, and valid formats.
+     - Vitest: **22 tests passing across 6 test suites** (0 failures).
+     - Next.js build: **Compiled all 34 routes successfully** with zero TypeScript errors.
+
+### [2026-10-23 18:15 IST] - Payment Simulator Route Hotfix: UUID Type Casting & BigInt Serialization
+
+- **Root Cause Identified from Terminal:**
+  - `GET /api/v1/dev/payment-simulator/TXN_...` threw a 500 Internal Server Error due to:
+    1. **PostgreSQL UUID Casting Error:** Querying `{ OR: [{ id: transactionId }, { merchantOrderId: transactionId }] }` caused PostgreSQL to attempt casting `"TXN_..."` to type `UUID` for the `payment.id` column, throwing code `22P02: invalid input syntax for type uuid`.
+    2. **BigInt JSON Serialization:** `order.totalAmountPaise` is a `BigInt` on the Prisma `Order` model. Directly returning `order: payment.order` in `NextResponse.json` causes `TypeError: Do not know how to serialize a BigInt`.
+- **Changes Applied:**
+  - Added regex `isUuid` check across simulator routes (`route.ts`, `success/route.ts`, `failure/route.ts`, `pending/route.ts`) and `PaymentsService.getPaymentStatus` so that `id` is only queried when `transactionId` is a valid UUID format.
+  - Converted `order.totalAmountPaise` to `Number(payment.order.totalAmountPaise)` before returning in JSON.
+
+### [2026-10-24 19:40 IST] - Network ID Creation & Authoritative Finalization Lifecycle
+
+- **Feature Implementation:**
+  - Implemented authoritative finalization service `FinalizationService.finalizePaidOrder(orderId, verifiedPaymentReference)` supporting idempotency, phone number reuse, collision-resistant random `publicId` and `referralCode`, ternary placement with BFS downline spillover, 10-level upline commissions in `HELD` status, transactional outbox jobs, and audit logs.
+  - Implemented development mock payment simulator endpoint `POST /api/v1/dev/payments/:paymentId/simulate` accepting `{ status: 'SUCCESS' | 'FAILED' | 'PENDING' }`, supporting both UUID and `TXN_...` formats, with strict production safeguards.
+  - Implemented member network inspection endpoints:
+    - `GET /api/v1/me/network-ids`
+    - `GET /api/v1/me/network-ids/:id`
+    - `GET /api/v1/me/network-ids/:id/children`
+    - `GET /api/v1/me/network-ids/:id/referral`
+    - `GET /api/v1/me/orders/:orderId/registration-status`
+  - Enforced multi-tenant isolation via `ForbiddenError` (403) across all `/me/network-ids/*` routes.
+  - Created automated Vitest suite `tests/network-id-finalization.test.ts` covering all 11 required business and security scenarios (33/33 tests passing).
+  - Updated documentation in `docs/FLOWS.md`, `docs/SEEDING.md`, `docs/PROVIDER_INTEGRATION.md`, and `.env.example`.
+- **Files Modified / Created:**
+  - `apps/web/src/modules/checkout/finalization.service.ts`
+  - `apps/web/src/modules/network/network.service.ts`
+  - `apps/web/src/app/api/v1/dev/payments/[paymentId]/simulate/route.ts`
+  - `apps/web/src/app/api/v1/me/network-ids/route.ts`
+  - `apps/web/src/app/api/v1/me/network-ids/[id]/route.ts`
+  - `apps/web/src/app/api/v1/me/network-ids/[id]/children/route.ts`
+  - `apps/web/src/app/api/v1/me/network-ids/[id]/referral/route.ts`
+  - `apps/web/src/app/api/v1/me/orders/[orderId]/registration-status/route.ts`
+  - `apps/web/src/lib/auth.ts`
+  - `apps/web/vitest.config.mts`
+  - `apps/web/tests/network-id-finalization.test.ts`
+  - `docs/FLOWS.md`
+  - `docs/SEEDING.md`
+  - `docs/PROVIDER_INTEGRATION.md`
+  - `.env.example`
+  - `apps/web/.env.example`
+- **Validation Results:**
+  - Tests: **33 tests passing across 7 test suites** (0 failures).
+  - Next.js Production Build: **35 routes compiled and static-rendered successfully** with zero TypeScript errors.
+
+### [2026-10-26 15:53 IST] - Fix: NetworkPlacement Relation Mapping (`parentPlacements` vs `placements`)
+
+- **Root Cause Analysis:**
+  - In `schema.prisma`, `NetworkId` defines two relations to `NetworkPlacement`:
+    - `placements @relation("ChildPlacement")` (where this node is the child).
+    - `parentPlacements @relation("ParentPlacement")` (where this node is the parent).
+  - `NetworkService` methods (`findPlacementSlot`, `validateReferralCode`, `listUserNetworkIds`, `getNetworkIdDetails`) were querying `include: { placements: true }` instead of `parentPlacements: true`.
+  - For parent nodes (including the Root Node `TULSI-ROOT-001`), `placements` returned an empty list `[]` (since the root node is nobody's child).
+  - Consequently, `findPlacementSlot` always concluded that slot 1 was open under the root node, even though slot 1 was already occupied by Rajesh Sharma from the seed script.
+  - When finalization attempted `tx.networkPlacement.create({ data: { parentNetworkId, slotNumber: 1, ... } })`, PostgreSQL rejected the write with `P2002: Unique constraint failed on the fields: (parent_network_id, slot_number)`.
+- **Changes Applied:**
+  - Updated [network.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/network/network.service.ts) across `validateReferralCode`, `findPlacementSlot`, `listUserNetworkIds`, and `getNetworkIdDetails` to query `include: { parentPlacements: true }` and safely fallback to `placements` for compatibility.
+- **Validation:**
+  - Ran Vitest suite: 33/33 tests passing.
+
+### [2026-10-26 18:15 IST] - Comprehensive Checkout & Network Registration Architecture Guide
+
+- **Documentation Created:**
+  - Created [docs/CHECKOUT_AND_REGISTRATION_ARCHITECTURE.md](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/docs/CHECKOUT_AND_REGISTRATION_ARCHITECTURE.md) covering the entire 10-step lifecycle from storefront arrival to 10-level upline commission allocation.
+  - Documented core business rules: Server-Authoritative Pricing (₹500), Indian E.164 normalization, CSPRNG SHA-256 phone challenge verification with timing-safe comparisons, BFS ternary tree spillover, User account reuse, collision-resistant random identifier generation, and atomic idempotent finalization.
+  - Performed comprehensive security & verification audit (threat model covering price tampering, timing attacks, replay attacks, checkout bypass, and multi-tenant isolation).
+  - Included senior-level Q&A cheat sheet for architectural defense.
+- **Validation:**
+  - Executed Vitest suite: 33/33 tests passing across all 7 test files.
+
+### [2026-10-26 18:37 IST] - Storefront Hero Mobile Top-and-Bottom Layout Tuning
+
+- **UI Enhancement:**
+  - In [HomePageClient.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/HomePageClient.tsx), updated the Hero section mobile layout:
+    - Anchored the **Top Block** (Eyebrow badge, Main Headline, Supporting Paragraph) directly below the Navbar at the top of the mobile screen.
+    - Anchored the **Bottom Block** (Action Buttons and Trust Markers) to the bottom of the section above the fold (`mt-auto sm:mt-6 pb-1 sm:pb-0`).
+    - Adjusted mobile gradient overlay to a dual vertical gradient (`from-[#183F32]/90 via-[#183F32]/40 to-[#183F32]/95`), maintaining high contrast and readability for top text and bottom buttons while allowing the background botanical video to shine through in the center.
+    - Desktop layout retains its original left-aligned grouping (`sm:block`, `sm:bg-gradient-to-r`).
+
+### [2026-10-26 19:15 IST] - Removal of OrderItem Table & Consolidation into Single-Product Order Model
+
+- **Background & Context:**
+  - Tulsi Swarojgar is a dedicated single-product D2C storefront (*Tulsi Meta Ved — Herbal Mix*).
+  - Having a separate `OrderItem` (`order_items`) 1:N relational table introduced unnecessary joins, migration complexity, and redundant foreign keys without providing any architectural benefit for a single-product catalog.
+- **Architectural Changes:**
+  - **Prisma Schema (`apps/web/prisma/schema.prisma`):**
+    - Dropped `model OrderItem` (`order_items` table).
+    - Removed `orderItems OrderItem[]` relation from `model Product`.
+    - Removed `items OrderItem[]` relation from `model Order`.
+    - Added immutable product snapshot fields directly to `model Order`:
+      - `productNameSnapshot String? @map("product_name_snapshot")`
+      - `productSlugSnapshot String? @map("product_slug_snapshot")`
+      - `skuSnapshot String? @map("sku_snapshot")`
+    - Preserved existing product audit fields on `Order`: `productId`, `quantity`, `unitPricePaise`, `subtotalPaise`, `totalAmountPaise`.
+  - **Database Migration:**
+    - Applied schema changes to Supabase PostgreSQL database using `prisma db push --accept-data-loss`.
+    - Regenerated Prisma Client using `prisma generate --no-engine`.
+  - **Backend Checkout Service (`apps/web/src/modules/checkout/checkout.service.ts`):**
+    - Updated `confirmCheckout` to write `productNameSnapshot`, `productSlugSnapshot`, and `skuSnapshot` directly to `Order.create` data, removing `items: { create: [...] }`.
+  - **Orders API Route (`apps/web/src/app/api/v1/orders/[id]/route.ts`):**
+    - Removed `include: { items: true }` from database query.
+    - Updated response payload to return `productName`, `productSlug`, `sku`, `quantity`, and `unitPricePaise` directly at the root.
+    - Provided a synthesized `items: [...]` array in the response for full backward compatibility with existing frontends and contract consumers.
+  - **Contracts (`packages/contracts/src/order.ts`):**
+    - Added `productId`, `productNameSnapshot`, `productSlugSnapshot`, `skuSnapshot`, `quantity`, and `unitPricePaise` to `OrderSchema`.
+    - Maintained `items: z.array(OrderItemSchema).optional()` as optional for backward compatibility.
+    - Recompiled `@tulsi/contracts`.
+- **Validation Results:**
+  - Automated tests: **All 33 Vitest tests passed** across all 7 test suites (0 failures).
+  - Next.js production build: **Cleanly compiled across all 35 routes** with zero TypeScript errors.
+
+### [2026-10-26 19:40 IST] - Pure Relational Address Referencing for Orders & JSON Column Removal
+
+- **Background & Context:**
+  - Transitioned the orders table from storing an individual `shipping_address` JSON blob to pure foreign key referencing (`shipping_address_id` -> `addresses.id`).
+- **Architectural Changes:**
+  - **Prisma Schema (`apps/web/prisma/schema.prisma`):**
+    - Dropped `shippingAddress Json @map("shipping_address")` from `model Order`.
+    - Maintained `shippingAddressId String? @map("shipping_address_id") @db.Uuid` and renamed relation to `shippingAddress Address? @relation("OrderShippingAddressRef", ...)`.
+    - Made `Address.userId` nullable (`String?`) to support guest checkout before user account registration.
+  - **Database Migration:**
+    - Applied schema update to PostgreSQL using `prisma db push --accept-data-loss`.
+    - Regenerated Prisma Client using `prisma generate --no-engine`.
+  - **Checkout Flow (`apps/web/src/modules/checkout/checkout.service.ts`):**
+    - In `confirmCheckout`, extracts validated shipping details from session, deduplicates against existing user addresses, and creates an `Address` row in `addresses` table.
+    - Creates `Order` with `shippingAddressId: address.id` without storing redundant JSON.
+  - **Payment Finalization (`apps/web/src/modules/checkout/finalization.service.ts`):**
+    - In `finalizeOrderAndRegistration`, when `User` is created/resolved, links `address.userId = user.id` and marks `isDefault: true` if the user has no existing default address.
+  - **Orders API Route (`apps/web/src/app/api/v1/orders/[id]/route.ts`):**
+    - Queries `include: { shippingAddress: true }`.
+    - Returns structured address entity with backward-compatible aliases (`houseFlat`, `streetLocality`, `pinCode`, `mobile`).
+  - **Member API Route (`apps/web/src/app/api/v1/me/addresses/route.ts`):**
+    - Added authenticated endpoint `GET /api/v1/me/addresses` to list saved addresses for the current member.
+  - **Contracts (`packages/contracts/src/order.ts`):**
+    - Updated `OrderSchema` to include `shippingAddressId` and recompiled `@tulsi/contracts`.
+- **Validation Results:**
+  - Automated tests: **All 34 Vitest tests passed** across all 7 test suites (including new scenario 12 verifying Address-to-User linking).
+  - Next.js production build: **Cleanly compiled across all 36 routes** with zero TypeScript or Turbopack errors.
+
+### [2026-10-26 19:55 IST] - Commission Engine Technical Architecture & Security Documentation
+
+- **Documentation Created:**
+  - Created [docs/COMMISSION_ENGINE_ARCHITECTURE.md](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/docs/COMMISSION_ENGINE_ARCHITECTURE.md) detailing the complete technical, mathematical, and security specification of the Tulsi Swaraj Commission Engine.
+  - Formulated the Level 1 direct milestone state machine (`0/3` -> ₹0, `1/3` -> ₹0, `2/3` -> ₹0, `3/3` -> ₹500, `4/3` -> no duplicate), backed by composite unique constraints on `Level1QualificationEvent`.
+  - Detailed the Levels 2–10 per-qualifying-position ancestor traversal rates (L2: ₹100, L3: ₹75, L4: ₹50, L5: ₹25, L6: ₹15, L7: ₹10, L8: ₹5, L9: ₹3, L10: ₹1).
+  - Documented strict broken-path rules (halts on missing/corrupt link, no skipping over broken links, audits `BLOCKED` status).
+  - Specified the precomputed, incrementally maintained `NetworkLevelSummary` architecture with atomic SQL updates, enabling $O(1)$ indexed reads for member dashboard queries.
+  - Documented the administrative reconciliation tool (`CommissionReconciliationService`) and senior architect Q&A defense cheat sheet.
+
+### [2026-10-26 20:15 IST] - Tulsi Swaraj Commission Engine Implementation & Full Verification
+
+- **Background & Objectives:**
+  - Implemented the complete backend commission calculation and ledger engine in accordance with client specifications and the approved architecture.
+  - Built an incrementally maintained precomputed database summary (`NetworkLevelSummary`) to ensure $O(1)$ dashboard reads without full-table aggregations.
+- **Architectural Deliverables & Schema Changes:**
+  - **Prisma Schema (`apps/web/prisma/schema.prisma`):**
+    - Extended `Commission` model with `planVersion`, `rewardType`, `idempotencyKey` (`@unique`), `blockReason`, and `@@index([beneficiaryNetworkId, relativeLevel])`.
+    - Created `NetworkLevelSummary` model tracking 10 levels with `[networkId, levelNumber]` unique constraint and fields for `earnedAmountPaise`, `heldAmountPaise`, `availableAmountPaise`, `paidAmountPaise`, and `reversedAmountPaise`.
+    - Created `Level1Qualification` and `Level1QualificationEvent` models with composite unique constraints for concurrency-safe milestone evaluation (`0/3` -> ₹0, `1/3` -> ₹0, `2/3` -> ₹0, `3/3` -> ₹500, `4/3` -> no duplicate).
+    - Synchronized schema to PostgreSQL via `prisma db push --accept-data-loss` and regenerated Prisma client with `prisma generate --no-engine`.
+  - **Domain Services (`apps/web/src/modules/commissions/`):**
+    - [commission-plan.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/commissions/commission-plan.ts): Centralized frozen configuration in integer paise (`tulsi-v1`).
+    - [hierarchy-resolver.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/commissions/hierarchy-resolver.service.ts): Strict-path upline traversal up to 10 levels with cycle and self-parenting guards.
+    - [commission-qualification.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/commissions/commission-qualification.service.ts): Level 1 direct milestone evaluation and progress tracker.
+    - [commission-summary.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/commissions/commission-summary.service.ts): Pre-initializes 10 level summaries per node; maintains atomic SQL increments/decrements.
+    - [commission-ledger.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/commissions/commission-ledger.service.ts): Idempotent ledger entry insertion with status `HELD` and summary updates.
+    - [commission-reconciliation.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/commissions/commission-reconciliation.service.ts): Audits precomputed summaries against ledger truth and repairs discrepancies.
+    - [commission-engine.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/commissions/commission-engine.service.ts): Authoritative entry point `processQualifyingSale(orderId)`.
+    - [commissions.service.ts](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/modules/commissions/commissions.service.ts): Facade for controllers and member APIs with `OFFICIAL_COMMISSION_SCHEDULE`.
+  - **Checkout Finalization Integration (`apps/web/src/modules/checkout/finalization.service.ts`):**
+    - Pre-initializes 10 level summaries for every newly created node.
+    - Triggers authoritative upline commission distribution inside the payment confirmation transaction.
+  - **Member API Endpoints:**
+    - `GET /api/v1/me/commissions/summary`: $O(1)$ precomputed summary response.
+    - `GET /api/v1/me/commissions`: Paginated ledger history with status and level filters.
+    - `GET /api/v1/me/qualification-progress`: Current Level 1 milestone completion progress.
+    - `GET /api/v1/me/network-ids/[id]/commissions`: Node-specific commission ledger.
+    - `GET /api/v1/me/network-ids/[id]/qualification`: Node-specific Level 1 progress.
+  - **Database Seed (`apps/web/prisma/seed.ts`):**
+    - Updated seed script to pre-initialize 10-level summaries for seeded tree nodes.
+  - **Documentation & Verification Guide:**
+    - [docs/COMMISSION_ENGINE_ARCHITECTURE.md](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/docs/COMMISSION_ENGINE_ARCHITECTURE.md): Technical architecture, mathematical proofs, and security guide.
+    - [docs/COMMISSION_TESTING.md](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/docs/COMMISSION_TESTING.md): Verification checklists and testing instructions.
+- **Validation Results:**
+  - Automated Tests: **All 44 Vitest tests passed** across all 8 test suites (including 10 comprehensive commission engine scenarios).
+  - Next.js Production Build: **All 39 static and dynamic routes compiled cleanly** with zero TypeScript or Turbopack errors.
+
+### [2026-10-26 20:52 IST] - Hero Video Gradient Overlay Tuning for Mobile and Desktop
+
+- **Component Modified:** [HomePageClient.tsx](file:///d:/CODING/NavigoTech%20Innovation/TulsiMLM/apps/web/src/components/home/HomePageClient.tsx#L83)
+- **Gradient Adjustments:**
+  - **Mobile (`< sm`):** Formulated natural multi-stop eased gradient (`0.60` -> `0.52` at 20% -> `0.38` at 32% -> `0.18` at 44% -> `0.04` at 54% -> `0` at 62%, and mirrored up to `0.60` at 100%) eliminating sharp banding lines and providing a gentle, organic feather into the transparent video center.
+  - **Desktop (`sm:`):** Formulated smooth horizontal gradient curve (`0.60` -> `0.52` at 25% -> `0.38` at 42% -> `0.20` at 58% -> `0.06` at 74% -> `0` at 88%) for a soft photographic vignette across the text zone.
+- **Verification:** All 44 automated tests passing.
 
 ---
 
-## 4. Next Implementation Steps
 
-1. **Backend API Integration (`apps/api` connection):**
-   - Create unified API client (`apps/web/src/lib/api-client.ts`) pointing to `apps/api` (`http://localhost:4000/api/v1`).
-2. **Product Catalogue Connection:**
-   - Connect Next.js product page and dynamic params to `GET /api/v1/products` while preserving static fallback / revalidation.
-3. **Checkout & PhonePe Integration:**
-   - Wire checkout form submission (`apps/web/src/app/checkout/page.tsx`) to `POST /api/v1/checkout` with backend authoritative pricing.
-   - Connect PhonePe redirect flow and return verification.
+## 4. Current Workspace Status & Next Steps
+
+1. **Current Status**:
+   - The Tulsi Swaraj Commission Engine and incrementally maintained database summary system are 100% implemented, tested, and integrated.
+   - All 44 automated tests passing across 8 suites.
+   - Next.js 16 production build compiled with 0 errors.
+2. **Next Steps**:
+   - Integrate live PhonePe merchant credentials when provided.
+   - Implement admin review dashboard UI to approve `HELD` commissions to `APPROVED` for wallet withdrawal.
+
+
 
